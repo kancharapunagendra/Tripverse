@@ -1,0 +1,301 @@
+/* Keyframes */
+/* Intro Animation */
+@keyframes roadAnimation {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes carDrive {
+    0% {
+        transform: translateX(-100px);
+    }
+    100% {
+        transform: translateX(calc(100vw + 100px));
+    }
+}
+
+@keyframes fadeInTrafficLights {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 0.8;
+        filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.7));
+    }
+    50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.9));
+    }
+}
+
+/* Intro Screen Styles */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1a202c;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.road-container {
+    width: 100%;
+    height: 100px;
+    position: relative;
+    margin: 2rem 0;
+}
+
+.road-line {
+    stroke: #4a5568;
+    stroke-width: 8;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: roadAnimation 2.5s ease-out forwards;
+}
+
+.car {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    color: #e53e3e;
+    font-size: 2rem;
+    animation: carDrive 3s linear forwards;
+    animation-delay: 0.5s;
+    z-index: 10;
+}
+
+.traffic-light {
+    position: absolute;
+    bottom: 50px;
+    right: 30%;
+    font-size: 2rem;
+    opacity: 0;
+    animation: fadeInTrafficLights 0.5s ease-out forwards;
+    animation-delay: 1.5s;
+}
+
+.loading-text {
+    color: #f7fafc;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.loading-text span {
+    display: inline-block;
+    opacity: 0;
+}
+
+.loading-text span:nth-child(1) { animation: fadeIn 0.3s ease-out 0.8s forwards; }
+.loading-text span:nth-child(2) { animation: fadeIn 0.3s ease-out 1.0s forwards; }
+.loading-text span:nth-child(3) { animation: fadeIn 0.3s ease-out 1.2s forwards; }
+.loading-text span:nth-child(4) { animation: fadeIn 0.3s ease-out 1.4s forwards; }
+.loading-text span:nth-child(5) { animation: fadeIn 0.3s ease-out 1.6s forwards; }
+.loading-text span:nth-child(6) { animation: fadeIn 0.3s ease-out 1.8s forwards; }
+.loading-text span:nth-child(7) { animation: fadeIn 0.3s ease-out 2.0s forwards; }
+.loading-text span:nth-child(8) { animation: fadeIn 0.3s ease-out 2.2s forwards; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.progress-bar {
+    width: 300px;
+    height: 4px;
+    background: #4a5568;
+    border-radius: 2px;
+    margin-top: 2rem;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(to right, #10b981, #f59e0b);
+    width: 0;
+    animation: progressLoad 3s ease-out forwards;
+}
+
+@keyframes progressLoad {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+/* Final Logo Reveal */
+.logo-reveal {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: logoReveal 1s ease-out forwards;
+    animation-delay: 3s;
+}
+
+@keyframes logoReveal {
+    0% { 
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Animation Classes */
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.animate-fade-in-up.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.animate-fade-in-up.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.animate-fade-in-up.delay-400 {
+    animation-delay: 0.4s;
+}
+
+.animate-fade-in-up.delay-500 {
+    animation-delay: 0.5s;
+}
+
+.animate-card-enter {
+    animation: cardEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+}
+
+.animate-card-enter.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.animate-card-enter.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.animate-card-enter.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.animate-card-enter.delay-400 {
+    animation-delay: 0.4s;
+}
+
+.animate-card-enter.delay-500 {
+    animation-delay: 0.5s;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Scroll Reveal Animations */
+[data-scroll] {
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-scroll="fadeIn"] {
+    transform: translateY(30px);
+}
+
+[data-scroll="fadeInLeft"] {
+    transform: translateX(-30px);
+}
+
+[data-scroll="fadeInRight"] {
+    transform: translateX(30px);
+}
+
+[data-scroll].is-visible {
+    opacity: 1;
+    transform: translate(0);
+}
