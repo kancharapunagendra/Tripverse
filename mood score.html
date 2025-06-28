@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIPVERSE IQ - Smart Travel Planner</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --primary: rgba(15, 23, 42, 0.85);
+      --secondary: rgba(30, 41, 59, 0.8);
+      --accent: #f59e0b;
+      --text: #e2e8f0;
+      --card-bg: rgba(30, 41, 59, 0.6);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+ body {
+  font-family: 'Segoe UI', sans-serif;
+  background: url('images/BG4.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+    header {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+    }
+
+    .logo i {
+      color: var(--accent);
+      font-size: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .nav-links a.active {
+      background: var(--accent);
+      color: #0f172a;
+      box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .search-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-direction: column;
+    }
+
+    .location-input {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .location-input button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-box {
+      flex: 1;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: rgba(30, 41, 59, 0.8);
+      color: white;
+      font-size: 1rem;
+    }
+
+    .search-button {
+      padding: 15px 25px;
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      width: 100%;
+    }
+
+    .search-button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .travel-plan {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .route-info {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(5px);
+    }
+
+    .mood-score {
+      width: 300px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(5px);
+    }
+
+    .score-meter {
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: linear-gradient(to right, #ef4444, #f59e0b, #10b981);
+      border-radius: 10px;
+    }
+
+    .factor {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+    }
+
+    .weather-report {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 8px;
+    }
+
+    .ai-suggestions {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 8px;
+    }
+
+    #map {
+      height: 300px;
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    footer {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 2rem;
+      margin-top: 2rem;
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .travel-plan {
+        flex-direction: column;
+      }
+      
+      .mood-score {
+        width: 100%;
+      }
+    }
+
+    .loader {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid var(--accent);
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .autocomplete-items {
+      position: absolute;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(30, 41, 59, 0.9);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.1); 
+    }
+
+    .autocomplete-items div:hover {
+      background-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .transport-options {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .transport-btn {
+      padding: 10px 15px;
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .transport-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .transport-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .route-comparison {
+      margin-top: 20px;
+    }
+
+    .route-option {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .route-option:hover {
+      border-color: var(--accent);
+    }
+
+    .route-option.selected {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+
+    .route-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .route-meta {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .route-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .price-breakdown {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .transport-icon {
+      font-size: 1.2rem;
+      margin-right: 5px;
+    }
+
+    .tab-container {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab.active {
+      border-bottom: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    
+    /* New styles for book now button */
+    .book-now-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 15px;
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .book-now-btn:hover {
+      background: #e69008;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+    }
+    
+    .route-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <i class="fas fa-globe-americas"></i>
+        <span>TRIPVERSE IQ</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="weather .html">weather</a>
+        <a href="budject.html" class="active">Budget Planner</a>
+        <a href="share pool .html">sharing Pool</a>
+        <a href="CAMERA.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1><i class="fas fa-route"></i> Smart Travel Planner</h1>
+      <p>Get real-time mood scores, weather predictions, and AI suggestions for your journey.</p>
+      
+      <div class="search-container">
+        <div class="location-input">
+          <button id="currentLocationBtn" title="Use current location">
+            <i class="fas fa-location-arrow"></i>
+          </button>
+          <div class="search-wrapper">
+            <input type="text" id="origin" class="search-box" placeholder="Current Location (or enter address)">
+            <div id="originAutocomplete" class="autocomplete-items"></div>
+          </div>
+        </div>
+        <div class="search-wrapper">
+          <input type="text" id="destination" class="search-box" placeholder="Destination">
+          <div id="destAutocomplete" class="autocomplete-items"></div>
+        </div>
+        <button class="search-button" id="searchButton"><i class="fas fa-search"></i> Plan Trip</button>
+      </div>
+
+      <div class="travel-plan">
+        <div class="route-info">
+          <div class="tab-container">
+            <div class="tab active" data-tab="routes">Routes</div>
+            <div class="tab" data-tab="details">Details</div>
+          </div>
+          
+          <div id="routesTabContent">
+            <div class="transport-options">
+              <button class="transport-btn active" data-mode="bus"><i class="fas fa-bus"></i> Bus</button>
+              <button class="transport-btn" data-mode="train"><i class="fas fa-train"></i> Train</button>
+              <button class="transport-btn" data-mode="flight"><i class="fas fa-plane"></i> Flight</button>
+              <button class="transport-btn" data-mode="car"><i class="fas fa-car"></i> Drive</button>
+            </div>
+            
+            <div class="route-comparison" id="routeOptions">
+              <!-- Route options will appear here -->
+              <div class="loader"></div>
+            </div>
+          </div>
+          
+          <div id="detailsTabContent" style="display: none;">
+            <div id="routeDetails">
+              <p>Select a route to see detailed information</p>
+            </div>
+          </div>
+          
+          <div id="map"></div>
+          
+          <div class="weather-report">
+            <h3><i class="fas fa-cloud-sun"></i> Weather Forecast</h3>
+            <div id="weatherInfo"></div>
+          </div>
+          
+          <div class="ai-suggestions">
+            <h3><i class="fas fa-robot"></i> Travel Suggestions</h3>
+            <div id="aiSuggestions"></div>
+          </div>
+        </div>
+        
+        <div class="mood-score">
+          <h2><i class="fas fa-smile"></i> Trip Mood Score</h2>
+          <div class="score-meter">
+            <div class="score-fill" id="moodScoreBar" style="width: 0%"></div>
+          </div>
+          <p id="moodScoreText">Score: 0/100</p>
+          
+          <h3>Factors:</h3>
+          <div class="factor">
+            <span>Budget</span>
+            <span id="budgetScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Traffic</span>
+            <span id="trafficScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Weather</span>
+            <span id="weatherScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Comfort</span>
+            <span id="comfortScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Safety</span>
+            <span id="safetyScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Carbon Footprint</span>
+            <span id="carbonScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Convenience</span>
+            <span id="convenienceScore">0/10</span>
+          </div>
+          <div class="factor">
+            <span>Reliability</span>
+            <span id="reliabilityScore">0/10</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2023 TRIPVERSE IQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Indian Cities Database (50 major cities)
+    const indianCities = [
+      "Mumbai, Maharashtra", "Delhi", "Bangalore, Karnataka", "Hyderabad, Telangana",
+      "Chennai, Tamil Nadu", "Kolkata, West Bengal", "Pune, Maharashtra", "Jaipur, Rajasthan",
+      "Ahmedabad, Gujarat", "Surat, Gujarat", "Lucknow, Uttar Pradesh", "Kanpur, Uttar Pradesh",
+      "Nagpur, Maharashtra", "Visakhapatnam, Andhra Pradesh", "Indore, Madhya Pradesh",
+      "Thane, Maharashtra", "Bhopal, Madhya Pradesh", "Patna, Bihar", "Vadodara, Gujarat",
+      "Ghaziabad, Uttar Pradesh", "Ludhiana, Punjab", "Agra, Uttar Pradesh", "Nashik, Maharashtra",
+      "Faridabad, Haryana", "Meerut, Uttar Pradesh", "Rajkot, Gujarat", "Varanasi, Uttar Pradesh",
+      "Srinagar, Jammu and Kashmir", "Aurangabad, Maharashtra", "Dhanbad, Jharkhand",
+      "Amritsar, Punjab", "Navi Mumbai, Maharashtra", "Allahabad, Uttar Pradesh", "Ranchi, Jharkhand",
+      "Howrah, West Bengal", "Coimbatore, Tamil Nadu", "Jabalpur, Madhya Pradesh", "Gwalior, Madhya Pradesh",
+      "Vijayawada, Andhra Pradesh", "Jodhpur, Rajasthan", "Madurai, Tamil Nadu", "Raipur, Chhattisgarh",
+      "Kota, Rajasthan", "Guwahati, Assam", "Chandigarh", "Solapur, Maharashtra", "Hubli, Karnataka",
+      "Bareilly, Uttar Pradesh", "Moradabad, Uttar Pradesh", "Mysore, Karnataka", "Gurgaon, Haryana"
+    ];
+
+    // Sample transport data for Indian routes (would be replaced with your actual dataset)
+    const transportData = {
+      // Mumbai to Delhi
+      "Mumbai, Maharashtra-Delhi": {
+        distance: 1400,
+        bus: { price: "1200-2500", duration: "24-30", operators: ["MSRTC", "Private Volvo"] },
+        train: { price: "500-4000", duration: "16-20", classes: ["Sleeper", "3AC", "2AC"] },
+        flight: { price: "3000-8000", duration: "2", airlines: ["IndiGo", "Air India"] },
+        car: { price: "6000-10000", duration: "20-24", tolls: "₹1200" }
+      },
+      // Bangalore to Hyderabad
+      "Bangalore, Karnataka-Hyderabad, Telangana": {
+        distance: 570,
+        bus: { price: "600-1500", duration: "9-11", operators: ["KSRTC", "Private AC"] },
+        train: { price: "350-2500", duration: "10-12", classes: ["Sleeper", "3AC"] },
+        flight: { price: "2500-6000", duration: "1.5", airlines: ["IndiGo", "SpiceJet"] },
+        car: { price: "3500-6000", duration: "9-10", tolls: "₹800" }
+      },
+      // Chennai to Kolkata
+      "Chennai, Tamil Nadu-Kolkata, West Bengal": {
+        distance: 1650,
+        bus: { price: "1500-3000", duration: "30-36", operators: ["TNSTC", "Private Sleeper"] },
+        train: { price: "600-4500", duration: "26-30", classes: ["Sleeper", "3AC", "2AC"] },
+        flight: { price: "3500-9000", duration: "2.5", airlines: ["Air India", "Vistara"] },
+        car: { price: "9000-15000", duration: "28-32", tolls: "₹2000" }
+      },
+      // Hyderabad to Vijayawada
+      "Hyderabad, Telangana-Vijayawada, Andhra Pradesh": {
+        distance: 275,
+        bus: { price: "300-800", duration: "5-6", operators: ["TSRTC", "Private AC"] },
+        train: { price: "120-2000", duration: "4-6", classes: ["Sleeper", "Chair Car"] },
+        flight: { price: "N/A", duration: "N/A", airlines: [] },
+        car: { price: "2000-3500", duration: "5-6", tolls: "₹400" }
+      },
+      // Delhi to Jaipur
+      "Delhi-Jaipur, Rajasthan": {
+        distance: 280,
+        bus: { price: "300-800", duration: "5-6", operators: ["RSRTC", "Private AC"] },
+        train: { price: "150-1500", duration: "4-6", classes: ["Sleeper", "Chair Car"] },
+        flight: { price: "2000-5000", duration: "1", airlines: ["IndiGo"] },
+        car: { price: "2500-4000", duration: "5-6", tolls: "₹350" }
+      }
+    };
+
+    // Current state
+    let currentMode = "bus";
+    let currentRoute = null;
+    let currentWeather = null;
+    let mapInstance = null;
+    let currentPosition = null;
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      initAutocomplete();
+      initTransportButtons();
+      initTabs();
+      
+      // Set default values for demo
+      document.getElementById('origin').value = "Hyderabad, Telangana";
+      document.getElementById('destination').value = "Bangalore, Karnataka";
+      
+      // Load default route
+      setTimeout(() => {
+        document.getElementById('searchButton').click();
+      }, 500);
+    });
+
+    // Initialize autocomplete
+    function initAutocomplete() {
+      const originInput = document.getElementById('origin');
+      const destInput = document.getElementById('destination');
+      
+      originInput.addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        const matches = indianCities.filter(city => 
+          city.toLowerCase().includes(val)
+        );
+        showAutocomplete(matches, 'originAutocomplete', originInput);
+      });
+      
+      destInput.addEventListener('input', function() {
+        const val = this.value.toLowerCase();
+        const matches = indianCities.filter(city => 
+          city.toLowerCase().includes(val)
+        );
+        showAutocomplete(matches, 'destAutocomplete', destInput);
+      });
+      
+      // Close autocomplete when clicking elsewhere
+      document.addEventListener('click', function(e) {
+        if (e.target.id !== 'origin' && e.target.id !== 'destination') {
+          document.getElementById('originAutocomplete').style.display = 'none';
+          document.getElementById('destAutocomplete').style.display = 'none';
+        }
+      });
+    }
+
+    function showAutocomplete(items, elementId, inputField) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+      
+      if (items.length === 0 || !inputField.value) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.innerHTML = item;
+        div.addEventListener('click', function() {
+          inputField.value = item;
+          container.style.display = 'none';
+        });
+        container.appendChild(div);
+      });
+      
+      container.style.display = 'block';
+    }
+
+    // Initialize transport mode buttons
+    function initTransportButtons() {
+      document.querySelectorAll('.transport-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.transport-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentMode = this.dataset.mode;
+          if (currentRoute) {
+            updateRouteDisplay();
+          }
+        });
+      });
+    }
+
+    // Initialize tab system
+    function initTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          document.getElementById('routesTabContent').style.display = 'none';
+          document.getElementById('detailsTabContent').style.display = 'none';
+          
+          if (this.dataset.tab === 'routes') {
+            document.getElementById('routesTabContent').style.display = 'block';
+          } else {
+            document.getElementById('detailsTabContent').style.display = 'block';
+            showRouteDetails();
+          }
+        });
+      });
+    }
+
+    // Get Current Location
+    document.getElementById('currentLocationBtn').addEventListener('click', () => {
+      document.getElementById('origin').value = "Detecting location...";
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            currentPosition = position;
+            try {
+              const address = await reverseGeocode(position.coords.latitude, position.coords.longitude);
+              document.getElementById('origin').value = address || "Current Location";
+            } catch (error) {
+              document.getElementById('origin').value = "Current Location";
+            }
+          },
+          (error) => {
+            document.getElementById('origin').value = "Current Location";
+          }
+        );
+      } else {
+        document.getElementById('origin').value = "Current Location";
+      }
+    });
+
+    // Reverse geocode coordinates to address
+    async function reverseGeocode(lat, lng) {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        );
+        const data = await response.json();
+        return data.display_name || null;
+      } catch (error) {
+        console.error("Reverse geocoding error:", error);
+        return null;
+      }
+    }
+
+    // Geocode location to coordinates
+    async function geocodeLocation(address) {
+      if (address === "Current Location" && currentPosition) {
+        return {
+          lat: currentPosition.coords.latitude,
+          lng: currentPosition.coords.longitude
+        };
+      }
+      
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${address}`
+        );
+        const data = await response.json();
+        return {
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon)
+        };
+      } catch (error) {
+        console.error("Geocoding error:", error);
+        throw error;
+      }
+    }
+
+    // Calculate distance between coordinates (Haversine formula)
+    function calculateDistance(coord1, coord2) {
+      const R = 6371; // Earth radius in km
+      const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
+      const dLon = (coord2.lng - coord1.lng) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(coord1.lat * Math.PI / 180) * Math.cos(coord2.lat * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    // Get Real Weather Data from OpenWeatherMap
+    async function getRealWeather(location) {
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=b6907d289e10d714a6e88b30761fae22`
+        );
+        const data = await response.json();
+        
+        return {
+          condition: data.weather[0].main,
+          temp: data.main.temp,
+          wind: data.wind.speed,
+          humidity: data.main.humidity,
+          icon: data.weather[0].icon,
+          rain: data.rain ? data.rain["1h"] || 0 : 0
+        };
+      } catch (error) {
+        console.error("Weather API error:", error);
+        throw error;
+      }
+    }
+
+    // Get Route Data from our dataset
+    async function getRouteData(start, end, mode) {
+      try {
+        // Check if we have data for this route
+        const routeKey1 = `${start}-${end}`;
+        const routeKey2 = `${end}-${start}`;
+        
+        let routeData = transportData[routeKey1] || transportData[routeKey2];
+        
+        if (!routeData) {
+          // If no specific data, generate approximate values
+          const startCoords = await geocodeLocation(start);
+          const endCoords = await geocodeLocation(end);
+          const distance = calculateDistance(startCoords, endCoords);
+          
+          routeData = {
+            distance: distance,
+            bus: { price: `${Math.round(distance*2)}-${Math.round(distance*4)}`, duration: `${Math.round(distance/40)}-${Math.round(distance/30)}` },
+            train: { price: `${Math.round(distance*1)}-${Math.round(distance*3)}`, duration: `${Math.round(distance/50)}-${Math.round(distance/40)}` },
+            flight: { price: distance > 500 ? `${Math.round(distance*5)}-${Math.round(distance*10)}` : "N/A", 
+                     duration: distance > 500 ? `${Math.round(distance/500)}` : "N/A" },
+            car: { price: `${Math.round(distance*8)}-${Math.round(distance*15)}`, duration: `${Math.round(distance/60)}-${Math.round(distance/50)}` }
+          };
+        }
+        
+        return {
+          mode: mode,
+          distance: routeData.distance,
+          price: routeData[mode].price,
+          duration: routeData[mode].duration,
+          details: routeData[mode],
+          start: start,
+          end: end
+        };
+      } catch (error) {
+        console.error(`Error getting ${mode} route:`, error);
+        throw error;
+      }
+    }
+
+    // Initialize map with OpenStreetMap
+    function initMap(start, end) {
+      // Remove existing map if it exists
+      if (mapInstance) {
+        mapInstance.remove();
+      }
+      
+      // Create new map centered between start and end
+      const centerLat = (start.lat + end.lat) / 2;
+      const centerLng = (start.lng + end.lng) / 2;
+      mapInstance = L.map('map').setView([centerLat, centerLng], 7);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(mapInstance);
+      
+      // Add markers for start and end points
+      L.marker([start.lat, start.lng])
+        .addTo(mapInstance)
+        .bindPopup("Start: " + document.getElementById('origin').value);
+      
+      L.marker([end.lat, end.lng])
+        .addTo(mapInstance)
+        .bindPopup("Destination: " + document.getElementById('destination').value);
+      
+      // Add a line between points
+      L.polyline(
+        [[start.lat, start.lng], [end.lat, end.lng]],
+        {color: '#f59e0b'}
+      ).addTo(mapInstance);
+    }
+
+    // Display weather info
+    function displayWeather(weather) {
+      const weatherIcons = {
+        "01d": "☀️", "01n": "🌙", 
+        "02d": "⛅", "02n": "⛅",
+        "03d": "☁️", "03n": "☁️",
+        "04d": "☁️", "04n": "☁️",
+        "09d": "🌧️", "09n": "🌧️",
+        "10d": "🌦️", "10n": "🌦️",
+        "11d": "⛈️", "11n": "⛈️",
+        "13d": "❄️", "13n": "❄️",
+        "50d": "🌫️", "50n": "🌫️"
+      };
+      
+      document.getElementById('weatherInfo').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+          <span style="font-size: 2rem;">${weatherIcons[weather.icon] || '☁️'}</span>
+          <div>
+            <h4 style="margin: 0;">${weather.condition}</h4>
+            <p style="margin: 5px 0; font-size: 1.5rem;">${weather.temp}°C</p>
+          </div>
+        </div>
+        <p><strong>Wind:</strong> ${weather.wind} m/s</p>
+        <p><strong>Humidity:</strong> ${weather.humidity}%</p>
+        ${weather.rain > 0 ? `<p><strong>Rain:</strong> ${weather.rain} mm/h</p>` : ''}
+      `;
+    }
+
+    // Calculate mood score for a route
+    function calculateMoodScore(route, weather) {
+      // Base scores for different transport modes
+      const modeScores = {
+        bus: 6,
+        train: 7,
+        flight: 5,
+        car: 6
+      };
+      
+      // Extract numeric values from price and duration ranges
+      const priceRange = route.price.split('-');
+      const avgPrice = (parseInt(priceRange[0]) + parseInt(priceRange[1] || priceRange[0])) / 2;
+      
+      const durationRange = route.duration.split('-');
+      const avgDuration = (parseInt(durationRange[0]) + parseInt(durationRange[1] || durationRange[0])) / 2;
+      
+      // Calculate price score (lower is better)
+      const priceScore = Math.max(1, 10 - (avgPrice / (route.distance * 0.1)));
+      
+      // Calculate duration score (shorter is better)
+      const durationScore = Math.max(1, 10 - (avgDuration / (route.distance * 0.05)));
+      
+      // Weather impact
+      let weatherScore = 0;
+      if (weather) {
+        if (weather.rain > 5) weatherScore = -2;
+        else if (weather.rain > 1) weatherScore = -1;
+        if (weather.temp > 35) weatherScore -= 1;
+        if (weather.temp < 10) weatherScore -= 1;
+      }
+      
+      // Calculate final score
+      const score = Math.min(10, Math.max(1, 
+        modeScores[route.mode] + 
+        (priceScore / 2) + 
+        (durationScore / 2) + 
+        weatherScore
+      ));
+      
+      return Math.round(score * 10); // Convert to 0-100 scale
+    }
+
+    // Generate travel suggestions
+    function generateTravelSuggestions(route, weather) {
+      let suggestions = [];
+      
+      // Mode-specific suggestions
+      if (route.mode === 'bus') {
+        suggestions.push("🚌 Book tickets in advance for better seats");
+        suggestions.push("💺 Try to get a window seat for comfort");
+      } else if (route.mode === 'train') {
+        suggestions.push("🚆 Check PNR status before traveling");
+        suggestions.push("🍱 Consider packing food for the journey");
+      } else if (route.mode === 'flight') {
+        suggestions.push("✈️ Arrive at airport 2 hours before departure");
+        suggestions.push("🛄 Check baggage restrictions carefully");
+      } else if (route.mode === 'car') {
+        suggestions.push("⛽ Plan fuel stops along the route");
+        suggestions.push("🛣️ Check toll plaza locations in advance");
+      }
+      
+      // Weather suggestions
+      if (weather) {
+        if (weather.rain > 5) {
+          suggestions.push("⛈️ Pack waterproof clothing and umbrella");
+        } else if (weather.rain > 1) {
+          suggestions.push("🌧️ Bring a raincoat or umbrella");
+        }
+        
+        if (weather.temp > 35) {
+          suggestions.push("☀️ Wear sunscreen and light clothing");
+          suggestions.push("💧 Stay hydrated - bring extra water");
+        } else if (weather.temp < 10) {
+          suggestions.push("❄️ Dress in warm layers");
+        }
+      }
+      
+      // Long distance suggestions
+      if (route.distance > 300) {
+        suggestions.push("⏱️ Plan for rest breaks during your trip");
+        if (route.mode !== 'flight') {
+          suggestions.push("🍎 Pack snacks for the journey");
+        }
+      }
+      
+      // Display suggestions
+      const suggestionsHTML = suggestions.length > 0 
+        ? suggestions.map(s => `<p>• ${s}</p>`).join('')
+        : "<p>✅ Everything looks good for your trip!</p>";
+      
+      document.getElementById('aiSuggestions').innerHTML = suggestionsHTML;
+    }
+
+    // Update mood score factors
+    function updateMoodFactors(route, weather) {
+      // Extract numeric values from price and duration ranges
+      const priceRange = route.price.split('-');
+      const avgPrice = (parseInt(priceRange[0]) + parseInt(priceRange[1] || priceRange[0])) / 2;
+      
+      const durationRange = route.duration.split('-');
+      const avgDuration = (parseInt(durationRange[0]) + parseInt(durationRange[1] || durationRange[0])) / 2;
+      
+      // Calculate factors
+      const factors = {
+        budget: Math.max(1, 10 - (avgPrice / (route.distance * 0.2))),
+        traffic: route.mode === 'bus' || route.mode === 'car' ? 6 : 9,
+        weather: weather ? (weather.rain > 5 ? 4 : weather.rain > 1 ? 7 : 10) : 8,
+        comfort: route.mode === 'flight' ? 8 : route.mode === 'train' ? 7 : 5,
+        safety: route.mode === 'flight' ? 9 : route.mode === 'train' ? 8 : 6,
+        carbon: Math.max(1, 10 - (route.distance * getCarbonPerKm(route.mode) / 10)),
+        convenience: route.mode === 'flight' ? 6 : 8,
+        reliability: route.mode === 'flight' ? 7 : 9
+      };
+      
+      // Update UI
+      document.getElementById('budgetScore').textContent = `${Math.round(factors.budget)}/10`;
+      document.getElementById('trafficScore').textContent = `${factors.traffic}/10`;
+      document.getElementById('weatherScore').textContent = `${factors.weather}/10`;
+      document.getElementById('comfortScore').textContent = `${factors.comfort}/10`;
+      document.getElementById('safetyScore').textContent = `${factors.safety}/10`;
+      document.getElementById('carbonScore').textContent = `${factors.carbon}/10`;
+      document.getElementById('convenienceScore').textContent = `${factors.convenience}/10`;
+      document.getElementById('reliabilityScore').textContent = `${factors.reliability}/10`;
+      
+      // Calculate total score
+      const totalScore = Math.round(
+        (factors.budget * 1.5) + 
+        (factors.traffic * 1.2) + 
+        (factors.weather * 1.0) + 
+        (factors.comfort * 1.3) + 
+        (factors.safety * 1.5) + 
+        (factors.carbon * 0.8) + 
+        (factors.convenience * 1.1) + 
+        (factors.reliability * 1.2)
+      ) / 10;
+      
+      document.getElementById('moodScoreText').textContent = `Score: ${totalScore}/10`;
+      document.getElementById('moodScoreBar').style.width = `${totalScore * 10}%`;
+    }
+
+    // Get carbon emissions per km for different modes
+    function getCarbonPerKm(mode) {
+      const carbonValues = {
+        bus: 0.1,
+        train: 0.05,
+        flight: 0.25,
+        car: 0.2
+      };
+      return carbonValues[mode] || 0.15;
+    }
+
+    // Generate booking link based on mode and route
+    function generateBookingLink(route) {
+      const start = route.start.split(',')[0].trim().toLowerCase().replace(/ /g, '-');
+      const end = route.end.split(',')[0].trim().toLowerCase().replace(/ /g, '-');
+      
+      switch(route.mode) {
+        case 'bus':
+          return `https://www.zingbus.com/bus-tickets/${start}-to-${end}-bus-route`;
+        case 'train':
+          return 'https://www.irctc.co.in/nget/train-search';
+        case 'flight':
+          return `https://www.goindigo.in/domestic-flights/${start}-to-${end}-flights.html`;
+        case 'car':
+          return `https://www.blablacar.in/ride-sharing/${start}/${end}`;
+        default:
+          return '#';
+      }
+    }
+
+    // Display route option
+    function displayRouteOption(route) {
+      const modeIcons = {
+        bus: 'bus',
+        train: 'train',
+        flight: 'plane',
+        car: 'car'
+      };
+      
+      const modeNames = {
+        bus: 'Bus',
+        train: 'Train',
+        flight: 'Flight',
+        car: 'Drive'
+      };
+      
+      const routeOption = document.createElement('div');
+      routeOption.className = 'route-option';
+      routeOption.innerHTML = `
+        <div class="route-header">
+          <h4><i class="fas fa-${modeIcons[route.mode]}"></i> ${modeNames[route.mode]}</h4>
+          <div>
+            <span>${route.distance} km</span> • 
+            <span>${route.duration} hrs</span>
+          </div>
+        </div>
+        <div class="route-meta">
+          <span><i class="fas fa-rupee-sign"></i> ₹${route.price}</span>
+          <span><i class="fas fa-clock"></i> ${route.duration} hrs</span>
+          <span><i class="fas fa-bolt"></i> ${calculateMoodScore(route, currentWeather)/10}/10</span>
+        </div>
+        <div class="route-actions">
+          <a href="${generateBookingLink(route)}" target="_blank" class="book-now-btn">Book Now</a>
+        </div>
+      `;
+      
+      routeOption.addEventListener('click', () => {
+        currentRoute = route;
+        document.querySelectorAll('.route-option').forEach(opt => opt.classList.remove('selected'));
+        routeOption.classList.add('selected');
+        showRouteDetails();
+      });
+      
+      return routeOption;
+    }
+
+    // Show detailed route information
+    function showRouteDetails() {
+      if (!currentRoute) return;
+      
+      const modeNames = {
+        bus: 'Bus',
+        train: 'Train',
+        flight: 'Flight',
+        car: 'Drive'
+      };
+      
+      let detailsHTML = `
+        <h3><i class="fas fa-${currentRoute.mode === 'bus' ? 'bus' : 
+                               currentRoute.mode === 'train' ? 'train' : 
+                               currentRoute.mode === 'flight' ? 'plane' : 'car'}"></i> 
+            ${modeNames[currentRoute.mode]} Details</h3>
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span><i class="fas fa-rupee-sign"></i> Estimated Price:</span>
+            <span>₹${currentRoute.price}</span>
+          </div>
+          <div class="price-row">
+            <span><i class="fas fa-clock"></i> Duration:</span>
+            <span>${currentRoute.duration} hours</span>
+          </div>
+          <div class="price-row">
+            <span><i class="fas fa-route"></i> Distance:</span>
+            <span>${currentRoute.distance} km</span>
+          </div>
+      `;
+      
+      // Add mode-specific details
+      if (currentRoute.mode === 'bus' && currentRoute.details.operators) {
+        detailsHTML += `
+          <div class="price-row">
+            <span><i class="fas fa-bus"></i> Operators:</span>
+            <span>${currentRoute.details.operators.join(', ')}</span>
+          </div>
+        `;
+      }
+      
+      if (currentRoute.mode === 'train' && currentRoute.details.classes) {
+        detailsHTML += `
+          <div class="price-row">
+            <span><i class="fas fa-train"></i> Classes:</span>
+            <span>${currentRoute.details.classes.join(', ')}</span>
+          </div>
+        `;
+      }
+      
+      if (currentRoute.mode === 'flight' && currentRoute.details.airlines) {
+        detailsHTML += `
+          <div class="price-row">
+            <span><i class="fas fa-plane"></i> Airlines:</span>
+            <span>${currentRoute.details.airlines.join(', ')}</span>
+          </div>
+        `;
+      }
+      
+      if (currentRoute.mode === 'car' && currentRoute.details.tolls) {
+        detailsHTML += `
+          <div class="price-row">
+            <span><i class="fas fa-road"></i> Estimated Tolls:</span>
+            <span>₹${currentRoute.details.tolls}</span>
+          </div>
+        `;
+      }
+      
+      detailsHTML += `
+        </div>
+        <div class="route-actions">
+          <a href="${generateBookingLink(currentRoute)}" target="_blank" class="book-now-btn">Book Now</a>
+        </div>
+      `;
+      
+      document.getElementById('routeDetails').innerHTML = detailsHTML;
+    }
+
+    // Update route display
+    async function updateRouteDisplay() {
+      const routeOptionsDiv = document.getElementById('routeOptions');
+      routeOptionsDiv.innerHTML = '<div class="loader"></div>';
+      
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      
+      if (!origin || !destination) {
+        routeOptionsDiv.innerHTML = '<p>Please enter both origin and destination</p>';
+        return;
+      }
+      
+      try {
+        // Get coordinates for map
+        const startCoords = await geocodeLocation(origin);
+        const endCoords = await geocodeLocation(destination);
+        initMap(startCoords, endCoords);
+        
+        // Get all route options
+        const busRoute = await getRouteData(origin, destination, 'bus');
+        const trainRoute = await getRouteData(origin, destination, 'train');
+        const flightRoute = await getRouteData(origin, destination, 'flight');
+        const carRoute = await getRouteData(origin, destination, 'car');
+        
+        // Filter out invalid routes (like flights for short distances)
+        const validRoutes = [busRoute, trainRoute, flightRoute, carRoute].filter(
+          route => route.price !== "N/A"
+        );
+        
+        // Display all route options
+        routeOptionsDiv.innerHTML = '';
+        validRoutes.forEach(route => {
+          routeOptionsDiv.appendChild(displayRouteOption(route));
+        });
+        
+        // Set the first route as default
+        if (validRoutes.length > 0) {
+          currentRoute = validRoutes[0];
+          document.querySelector('.route-option').classList.add('selected');
+          showRouteDetails();
+        }
+        
+        // Get weather for destination
+        try {
+          currentWeather = await getRealWeather(destination);
+          displayWeather(currentWeather);
+        } catch (error) {
+          console.error("Couldn't get weather:", error);
+          currentWeather = null;
+        }
+        
+        // Update mood score and suggestions
+        updateMoodFactors(currentRoute, currentWeather);
+        generateTravelSuggestions(currentRoute, currentWeather);
+        
+      } catch (error) {
+        routeOptionsDiv.innerHTML = '<p>Error calculating routes. Please try again.</p>';
+        console.error("Route calculation error:", error);
+      }
+    }
+
+    // Search button handler
+    document.getElementById('searchButton').addEventListener('click', updateRouteDisplay);
+  </script>
+</body>
+</html>

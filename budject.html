@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Budget Planner | TRIPVERSE IQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('IMAGES/BG4.JPG') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      transition: background 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: blur(6px);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      color: #ffd166;
+    }
+    
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      width: 30px;
+      height: 22px;
+      justify-content: space-between;
+    }
+
+    .menu-toggle span {
+      height: 4px;
+      background: white;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav ul li a i {
+      font-size: 0.9rem;
+    }
+
+    nav ul li a:hover {
+      color: #ffd166;
+    }
+
+    .page-title {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
+      margin: 20px 40px;
+      border-radius: 10px;
+    }
+
+    .page-title h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .budget-planner-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .planner-form {
+      flex: 1 1 500px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .planner-form h2 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus {
+      outline: none;
+      border-color: #ffd166;
+    }
+
+    .suggestions-dropdown {
+      position: absolute;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0 0 6px 6px;
+      z-index: 100;
+      display: none;
+    }
+
+    .suggestions-dropdown div {
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    .suggestions-dropdown div:hover {
+      background: rgba(255, 209, 102, 0.2);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #ffd166;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      background-color: #ffc933;
+      transform: translateY(-2px);
+    }
+
+    .results-container {
+      flex: 1 1 500px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .results-container h2 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .budget-summary {
+      margin-bottom: 30px;
+    }
+
+    .budget-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .budget-item:last-child {
+      border-bottom: none;
+    }
+
+    .budget-item .label {
+      font-weight: 500;
+    }
+
+    .budget-item .value {
+      font-weight: bold;
+    }
+
+    .total-budget {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 209, 102, 0.2);
+      border-radius: 6px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .ai-insights {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+
+    .ai-insights h3 {
+      margin-bottom: 15px;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-insights p {
+      line-height: 1.6;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      color: #ffd166;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      background-color: #000;
+      color: #fff;
+      padding: 40px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      text-align: left;
+    }
+
+    .footer-column h4 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #ffd166;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-column ul li a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-column ul li a:hover {
+      color: #ffd166;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      color: #fff;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: #ffd166;
+    }
+
+    .copyright {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    /* Chatbot Styles */
+    .chatbot-icon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ffd166;
+      color: #000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .chatbot-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .chatbot-container {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      overflow: hidden;
+      display: none;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .chatbot-header {
+      background: #1d2671;
+      color: #fff;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chatbot-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-chatbot {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .chatbot-messages {
+      height: 300px;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f5f5f5;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      border-radius: 18px;
+      max-width: 80%;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .bot-message {
+      background: #e5e5ea;
+      color: #000;
+      border-bottom-left-radius: 5px;
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background: #1d2671;
+      color: #fff;
+      border-bottom-right-radius: 5px;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .chatbot-input {
+      display: flex;
+      padding: 10px;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    .chatbot-input input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .chatbot-input button {
+      background: #1d2671;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .chatbot-input button:hover {
+      background: #ffd166;
+      color: #000;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.95);
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      nav ul.show {
+        display: flex;
+      }
+
+      nav ul li {
+        margin: 10px 0;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .budget-planner-container {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+
+      .page-title {
+        margin: 20px;
+      }
+
+      .chatbot-container {
+        width: 90%;
+        right: 5%;
+        bottom: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-compass"></i>
+      TRIPVERSE IQ
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav>
+      <ul id="navList">
+       <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
+        
+          <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
+          <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
+          <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
+    
+          <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
+          <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="page-title">
+    <h1><i class="fas fa-calculator"></i> Budget Planner</h1>
+    <p>Plan your travel expenses efficiently with our AI-powered budget calculator. Get personalized recommendations to optimize your travel costs.</p>
+  </section>
+
+  <div class="budget-planner-container">
+    <div class="planner-form">
+      <h2><i class="fas fa-edit"></i> Enter Your Details</h2>
+      <form id="budgetForm">
+        <div class="form-group">
+          <label for="currentLocation">Current Location</label>
+          <input type="text" id="currentLocation" placeholder="Where are you traveling from?" required>
+          <div class="suggestions-dropdown" id="currentLocationSuggestions"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input type="text" id="destination" placeholder="Where are you traveling to?" required>
+          <div class="suggestions-dropdown" id="destinationSuggestions"></div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="travelers">Number of Travelers</label>
+            <input type="number" id="travelers" min="1" value="1" required>
+          </div>
+          <div class="form-group">
+            <label for="days">Duration (Days)</label>
+            <input type="number" id="days" min="1" value="3" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="transport">Transportation Type</label>
+          <select id="transport" required>
+            <option value="">Select transportation</option>
+            <option value="flight">Flight</option>
+            <option value="train">Train</option>
+            <option value="bus">Bus</option>
+            <option value="car">Personal Car</option>
+            <option value="rental_car">Rental Car</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="accommodation">Accommodation Type</label>
+          <select id="accommodation" required>
+            <option value="">Select accommodation</option>
+            <option value="hotel">Hotel (3-4 star)</option>
+            <option value="budget_hotel">Budget Hotel</option>
+            <option value="hostel">Hostel</option>
+            <option value="airbnb">Airbnb</option>
+            <option value="luxury">Luxury Hotel</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="food_preference">Food Preference</label>
+          <select id="food_preference" required>
+            <option value="budget">Budget (street food, groceries)</option>
+            <option value="moderate" selected>Moderate (mix of restaurants and cafes)</option>
+            <option value="fine_dining">Fine Dining (restaurants for most meals)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="activities">Activities Level</label>
+          <select id="activities" required>
+            <option value="light">Light (mostly free attractions)</option>
+            <option value="moderate" selected>Moderate (some paid attractions)</option>
+            <option value="extensive">Extensive (many paid activities/tours)</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-calculator"></i> Calculate Budget
+        </button>
+      </form>
+    </div>
+    
+    <div class="results-container">
+      <h2><i class="fas fa-chart-pie"></i> Budget Summary</h2>
+      <div id="resultsContent">
+        <div class="initial-message">
+          <p>Fill out the form to see a detailed breakdown of your travel budget and receive personalized cost-saving recommendations.</p>
+          <div style="text-align: center; margin-top: 30px; opacity: 0.7;">
+            <i class="fas fa-calculator" style="font-size: 5rem; color: #ffd166;"></i>
+          </div>
+        </div>
+        <div id="budgetResults" style="display: none;">
+          <div class="budget-summary">
+            <div class="budget-item">
+              <span class="label">Transportation:</span>
+              <span class="value" id="transportCost">₹0</span>
+            </div>
+            <div class="budget-item">
+              <span class="label">Accommodation:</span>
+              <span class="value" id="accommodationCost">₹0</span>
+            </div>
+            <div class="budget-item">
+              <span class="label">Food:</span>
+              <span class="value" id="foodCost">₹0</span>
+            </div>
+            <div class="budget-item">
+              <span class="label">Activities:</span>
+              <span class="value" id="activitiesCost">₹0</span>
+            </div>
+            <div class="budget-item">
+              <span class="label">Total Estimated Cost:</span>
+              <span class="value" id="totalCost">₹0</span>
+            </div>
+          </div>
+          
+          <div class="ai-insights">
+            <h3><i class="fas fa-lightbulb"></i> Travel Recommendations</h3>
+            <div id="aiInsights">
+              <p>Your personalized cost-saving tips will appear here after calculation.</p>
+            </div>
+          </div>
+        </div>
+        <div id="loadingIndicator" class="loading" style="display: none;">
+          <i class="fas fa-spinner"></i>
+          <p>Calculating your travel budget...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>TRIPVERSE IQ</h4>
+        <p>Your smart travel companion for real-time insights and seamless journey planning.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Traffic Updates</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Weather Forecast</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Ride Sharing</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Trip Planner</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contact Info</h4>
+        <ul>
+          <li><i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka, India</li>
+          <li><i class="fas fa-phone"></i> +91 9876543210</li>
+          <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Chatbot Elements -->
+  <div class="chatbot-icon" onclick="toggleChatbot()">
+    <i class="fas fa-robot"></i>
+  </div>
+
+  <div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header">
+      <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
+      <button class="close-chatbot" onclick="toggleChatbot()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="message bot-message">
+        Hello! I'm your Tripverse assistant. How can I help you with your travel budget today?
+      </div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle mobile menu
+    function toggleMenu() {
+      const navList = document.getElementById("navList");
+      navList.classList.toggle("show");
+    }
+
+    // Database of Indian cities with realistic pricing data
+    const cityDatabase = [
+      { name: "Mumbai", flight: 5000, train: 1500, bus: 800, hotel: { budget: 1200, midrange: 2500, luxury: 5000 } },
+      { name: "Delhi", flight: 4500, train: 1200, bus: 700, hotel: { budget: 1000, midrange: 2200, luxury: 4500 } },
+      { name: "Bangalore", flight: 5500, train: 1800, bus: 900, hotel: { budget: 1500, midrange: 3000, luxury: 5500 } },
+      { name: "Hyderabad", flight: 4800, train: 1400, bus: 750, hotel: { budget: 1100, midrange: 2400, luxury: 4800 } },
+      { name: "Chennai", flight: 5200, train: 1600, bus: 850, hotel: { budget: 1300, midrange: 2700, luxury: 5200 } },
+      { name: "Kolkata", flight: 4700, train: 1300, bus: 720, hotel: { budget: 950, midrange: 2100, luxury: 4700 } },
+      { name: "Pune", flight: 4900, train: 1450, bus: 780, hotel: { budget: 1150, midrange: 2300, luxury: 4900 } },
+      { name: "Jaipur", flight: 4600, train: 1250, bus: 680, hotel: { budget: 900, midrange: 2000, luxury: 4600 } },
+      { name: "Goa", flight: 6000, train: 2000, bus: 1000, hotel: { budget: 1800, midrange: 3500, luxury: 6000 } },
+      { name: "Ahmedabad", flight: 4400, train: 1100, bus: 650, hotel: { budget: 850, midrange: 1900, luxury: 4400 } }
+    ];
+
+    // Autocomplete functionality
+    document.getElementById('currentLocation').addEventListener('input', function() {
+      showSuggestions(this.value, 'currentLocationSuggestions');
+    });
+
+    document.getElementById('destination').addEventListener('input', function() {
+      showSuggestions(this.value, 'destinationSuggestions');
+    });
+
+    function showSuggestions(query, suggestionBoxId) {
+      const suggestions = document.getElementById(suggestionBoxId);
+      if (query.length < 2) {
+        suggestions.style.display = 'none';
+        return;
+      }
+
+      const filtered = cityDatabase.filter(city => 
+        city.name.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5);
+
+      if (filtered.length === 0) {
+        suggestions.style.display = 'none';
+        return;
+      }
+
+      suggestions.innerHTML = filtered.map(city => `
+        <div class="suggestion-item" onclick="selectSuggestion('${city.name}', '${suggestionBoxId.replace('Suggestions', '')}')">
+          ${city.name}
+        </div>
+      `).join('');
+      suggestions.style.display = 'block';
+    }
+
+    function selectSuggestion(cityName, inputId) {
+      document.getElementById(inputId).value = cityName;
+      document.getElementById(inputId + 'Suggestions').style.display = 'none';
+    }
+
+    // Close suggestions when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.form-group')) {
+        document.getElementById('currentLocationSuggestions').style.display = 'none';
+        document.getElementById('destinationSuggestions').style.display = 'none';
+      }
+    });
+
+    // Budget calculation
+    document.getElementById('budgetForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      calculateBudget();
+    });
+
+    function calculateBudget() {
+      // Show loading
+      document.getElementById('loadingIndicator').style.display = 'block';
+      document.getElementById('budgetResults').style.display = 'none';
+      document.querySelector('.initial-message').style.display = 'none';
+
+      // Get form values
+      const currentLocation = document.getElementById('currentLocation').value;
+      const destination = document.getElementById('destination').value;
+      const travelers = parseInt(document.getElementById('travelers').value);
+      const days = parseInt(document.getElementById('days').value);
+      const transport = document.getElementById('transport').value;
+      const accommodation = document.getElementById('accommodation').value;
+      const food_preference = document.getElementById('food_preference').value;
+      const activities = document.getElementById('activities').value;
+
+      // Simulate API delay
+      setTimeout(() => {
+        // Find city data
+        const fromCity = cityDatabase.find(c => c.name.toLowerCase() === currentLocation.toLowerCase());
+        const toCity = cityDatabase.find(c => c.name.toLowerCase() === destination.toLowerCase());
+
+        // Calculate costs
+        let transportCost = 0;
+        let accommodationCost = 0;
+        let foodCost = 0;
+        let activitiesCost = 0;
+
+        // Transport calculation
+        if (toCity) {
+          switch(transport) {
+            case 'flight':
+              transportCost = toCity.flight * travelers;
+              break;
+            case 'train':
+              transportCost = toCity.train * travelers;
+              break;
+            case 'bus':
+              transportCost = toCity.bus * travelers;
+              break;
+            case 'car':
+              transportCost = 10 * 100 * travelers; // ₹10/km * 100km
+              break;
+            case 'rental_car':
+              transportCost = 1500 * days;
+              break;
+          }
+        }
+
+        // Accommodation calculation
+        if (toCity) {
+          switch(accommodation) {
+            case 'hotel':
+              accommodationCost = toCity.hotel.midrange * days * travelers;
+              break;
+            case 'budget_hotel':
+              accommodationCost = toCity.hotel.budget * days * travelers;
+              break;
+            case 'luxury':
+              accommodationCost = toCity.hotel.luxury * days * travelers;
+              break;
+            case 'hostel':
+              accommodationCost = 600 * days * travelers;
+              break;
+            case 'airbnb':
+              accommodationCost = 1800 * days;
+              break;
+          }
+        }
+
+        // Food calculation
+        switch(food_preference) {
+          case 'budget':
+            foodCost = 300 * days * travelers;
+            break;
+          case 'moderate':
+            foodCost = 600 * days * travelers;
+            break;
+          case 'fine_dining':
+            foodCost = 1000 * days * travelers;
+            break;
+        }
+
+        // Activities calculation
+        switch(activities) {
+          case 'light':
+            activitiesCost = 750 * travelers;
+            break;
+          case 'moderate':
+            activitiesCost = 2000 * travelers;
+            break;
+          case 'extensive':
+            activitiesCost = 4000 * travelers;
+            break;
+        }
+
+        // Update UI
+        document.getElementById('transportCost').textContent = '₹' + transportCost.toLocaleString('en-IN');
+        document.getElementById('accommodationCost').textContent = '₹' + accommodationCost.toLocaleString('en-IN');
+        document.getElementById('foodCost').textContent = '₹' + foodCost.toLocaleString('en-IN');
+        document.getElementById('activitiesCost').textContent = '₹' + activitiesCost.toLocaleString('en-IN');
+        
+        const total = transportCost + accommodationCost + foodCost + activitiesCost;
+        document.getElementById('totalCost').textContent = '₹' + total.toLocaleString('en-IN');
+
+        // Generate recommendations
+        generateRecommendations(currentLocation, destination, transport, accommodation, days, travelers, total);
+
+        // Show results
+        document.getElementById('loadingIndicator').style.display = 'none';
+        document.getElementById('budgetResults').style.display = 'block';
+      }, 1000);
+    }
+
+    function generateRecommendations(from, to, transport, accommodation, days, travelers, total) {
+      let recommendations = '';
+      
+      // Transport recommendations
+      recommendations += `
+        <p><strong>Transportation Tips:</strong></p>
+        <ul>
+          <li>Book ${transport === 'flight' ? 'flights' : 'tickets'} at least 2 months in advance for best prices</li>
+          ${transport === 'flight' ? '<li>Consider mid-week flights for lower fares</li>' : ''}
+          ${transport === 'train' ? '<li>Look for Tatkal tickets if booking last minute</li>' : ''}
+        </ul>
+      `;
+
+      // Accommodation recommendations
+      recommendations += `
+        <p style="margin-top: 15px;"><strong>Accommodation Tips:</strong></p>
+        <ul>
+          <li>Check online booking platforms for ${accommodation.replace('_', ' ')} deals in ${to}</li>
+          <li>Consider locations near public transport to save on local travel</li>
+        </ul>
+      `;
+
+      // General tips
+      recommendations += `
+        <p style="margin-top: 15px;"><strong>Money Saving Tips:</strong></p>
+        <ul>
+          <li>Travel during off-season for lower prices</li>
+          <li>Use public transport instead of taxis</li>
+          <li>Look for combo tickets for attractions</li>
+          ${travelers > 2 ? '<li>Consider group discounts for activities</li>' : ''}
+          ${days > 5 ? '<li>Weekly rates may be cheaper for accommodations</li>' : ''}
+        </ul>
+      `;
+
+      document.getElementById('aiInsights').innerHTML = recommendations;
+    }
+
+    // Chatbot functionality
+    function toggleChatbot() {
+      const chatbot = document.getElementById("chatbot");
+      chatbot.style.display = chatbot.style.display === "block" ? "none" : "block";
+    }
+
+    function sendMessage() {
+      const userInput = document.getElementById("userInput");
+      const chatMessages = document.getElementById("chatMessages");
+      
+      if (userInput.value.trim() === "") return;
+      
+      // Add user message
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user-message";
+      userMessage.textContent = userInput.value;
+      chatMessages.appendChild(userMessage);
+      
+      // Clear input
+      const message = userInput.value;
+      userInput.value = "";
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Simulate bot response after delay
+      setTimeout(() => {
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        
+        // Simple response logic
+        if (message.toLowerCase().includes("budget")) {
+          botMessage.textContent = "The budget planner helps estimate your travel costs. Enter your trip details to get a breakdown of transportation, accommodation, food, and activity expenses.";
+        } 
+        else if (message.toLowerCase().includes("save") || message.toLowerCase().includes("cheap")) {
+          botMessage.textContent = "To save money: 1) Book transport early 2) Choose budget accommodations 3) Eat at local restaurants 4) Look for free activities 5) Travel in groups if possible.";
+        }
+        else if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+          botMessage.textContent = "Hello! I can help you with travel budget planning. Ask me about saving money or using the budget calculator.";
+        }
+        else {
+          botMessage.textContent = "I'm here to help with your travel budget questions. You can ask about saving money or how to use the budget planner tool.";
+        }
+        
+        chatMessages.appendChild(botMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+
+    // Allow pressing Enter to send message
+    document.getElementById("userInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

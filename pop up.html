@@ -1,0 +1,217 @@
+<!-- Add this right before the closing </body> tag -->
+<div class="rating-popup" id="ratingPopup">
+  <div class="rating-container">
+    <button class="close-rating" onclick="closeRatingPopup()">&times;</button>
+    <h3>How would you rate your experience with TRIPVERSE IQ?</h3>
+    <div class="rating-stars">
+      <span onclick="rate(1)">★</span>
+      <span onclick="rate(2)">★</span>
+      <span onclick="rate(3)">★</span>
+      <span onclick="rate(4)">★</span>
+      <span onclick="rate(5)">★</span>
+      <span onclick="rate(6)">★</span>
+      <span onclick="rate(7)">★</span>
+      <span onclick="rate(8)">★</span>
+      <span onclick="rate(9)">★</span>
+      <span onclick="rate(10)">★</span>
+    </div>
+    <p class="rating-text">Select between 1 (poor) to 10 (excellent)</p>
+    <textarea id="feedbackText" placeholder="Optional: Share your feedback..."></textarea>
+    <button onclick="submitRating()" class="submit-rating">Submit Rating</button>
+    <div class="thank-you-message" id="thankYouMessage">
+      Thank you for your feedback! Your rating helps us improve.
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Rating Popup Styles */
+  .rating-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none;
+    border: 1px solid #ffd166;
+  }
+  
+  .rating-container {
+    position: relative;
+  }
+  
+  .close-rating {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ffd166;
+    color: #000;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .rating-stars {
+    font-size: 24px;
+    margin: 15px 0;
+    color: #555;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .rating-stars span {
+    cursor: pointer;
+    transition: color 0.2s;
+    margin: 0 2px;
+  }
+  
+  .rating-stars span:hover,
+  .rating-stars span.active {
+    color: #ffd166;
+  }
+  
+  .rating-text {
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #aaa;
+  }
+  
+  #feedbackText {
+    width: 100%;
+    height: 80px;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    resize: none;
+  }
+  
+  .submit-rating {
+    background: #ffd166;
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .submit-rating:hover {
+    background: #ffc233;
+  }
+  
+  .thank-you-message {
+    display: none;
+    text-align: center;
+    margin-top: 10px;
+    color: #ffd166;
+    font-size: 14px;
+  }
+</style>
+
+<script>
+  // Rating System Functionality
+  let currentRating = 0;
+  let hasRated = localStorage.getItem('hasRated');
+  
+  // Show rating popup after 30 seconds if user hasn't rated yet
+  setTimeout(function() {
+    if (!hasRated) {
+      showRatingPopup();
+    }
+  }, 30000);
+  
+  function showRatingPopup() {
+    document.getElementById('ratingPopup').style.display = 'block';
+  }
+  
+  function closeRatingPopup() {
+    document.getElementById('ratingPopup').style.display = 'none';
+    // Don't show again for this session
+    localStorage.setItem('hasRated', 'true');
+  }
+  
+  function rate(value) {
+    currentRating = value;
+    const stars = document.querySelectorAll('.rating-stars span');
+    stars.forEach((star, index) => {
+      if (index < value) {
+        star.classList.add('active');
+        star.style.color = '#ffd166';
+      } else {
+        star.classList.remove('active');
+        star.style.color = '#555';
+      }
+    });
+  }
+  
+  function submitRating() {
+    if (currentRating === 0) {
+      alert('Please select a rating before submitting.');
+      return;
+    }
+    
+    const feedback = document.getElementById('feedbackText').value;
+    
+    // Here you would typically send the rating and feedback to your server
+    console.log(`User rating: ${currentRating}/10`);
+    console.log(`User feedback: ${feedback}`);
+    
+    // Show thank you message
+    document.getElementById('thankYouMessage').style.display = 'block';
+    document.querySelector('.submit-rating').style.display = 'none';
+    document.getElementById('feedbackText').style.display = 'none';
+    document.querySelector('.rating-text').style.display = 'none';
+    document.querySelector('.rating-stars').style.display = 'none';
+    document.querySelector('h3').textContent = 'Thank you for your feedback!';
+    
+    // Close after 3 seconds
+    setTimeout(closeRatingPopup, 3000);
+    
+    // Store that user has rated
+    localStorage.setItem('hasRated', 'true');
+    
+    // Send data to your backend (example using fetch)
+    /*
+    fetch('/api/ratings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        rating: currentRating,
+        feedback: feedback
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    */
+  }
+  
+  // Allow rating via keyboard (1-0 keys for 1-10 ratings)
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('ratingPopup').style.display === 'block') {
+      const key = parseInt(e.key);
+      if (!isNaN(key) && key >= 0 && key <= 9) {
+        // 0 key means 10 rating
+        rate(key === 0 ? 10 : key);
+      }
+    }
+  });
+</script>

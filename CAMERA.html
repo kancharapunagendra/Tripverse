@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIPVERSE IQ - Live Cameras</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: rgba(15, 23, 42, 0.85);
+      --secondary: rgba(30, 41, 59, 0.8);
+      --accent: #f59e0b;
+      --text: #e2e8f0;
+      --card-bg: rgba(30, 41, 59, 0.6);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('IMAGES/BG4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    header {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+    }
+
+    .logo i {
+      color: var(--accent);
+      font-size: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .nav-links a.active {
+      background: var(--accent);
+      color: #0f172a;
+      box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 2rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 15px;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .page-header {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .page-header h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(to right, var(--accent), #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+      font-family: 'Arial Rounded MT Bold', sans-serif;
+    }
+
+    .page-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Camera Section */
+    .search-box {
+      display: flex;
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+
+    #locationInput {
+      flex: 1;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 30px 0 0 30px;
+      font-size: 1.1rem;
+      background: rgba(30, 41, 59, 0.8);
+      color: white;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-right: none;
+    }
+
+    #locationInput::placeholder {
+      color: rgba(226, 232, 240, 0.6);
+    }
+
+    #searchButton {
+      padding: 15px 30px;
+      background: linear-gradient(to right, var(--accent), #fbbf24);
+      color: #0f172a;
+      border: none;
+      border-radius: 0 30px 30px 0;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-left: none;
+    }
+
+    #searchButton:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .quick-search {
+      display: flex;
+      gap: 12px;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .quick-search button {
+      padding: 10px 22px;
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .quick-search button:hover {
+      background: var(--accent);
+      color: #0f172a;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Enhanced Camera Grid */
+    .camera-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 25px;
+      margin-top: 2rem;
+    }
+
+    .camera-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .camera-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+      border-color: var(--accent);
+    }
+
+    .camera-frame {
+      width: 100%;
+      height: 250px;
+      border: none;
+    }
+
+    .camera-info {
+      padding: 1.5rem;
+    }
+
+    .camera-info h3 {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      color: white;
+    }
+
+    .camera-info p {
+      opacity: 0.9;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #ef4444;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      margin-left: 12px;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    .timestamp {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: rgba(226, 232, 240, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(245, 158, 11, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .footer-column h3 {
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-column a {
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .footer-column a:hover {
+      color: var(--accent);
+      padding-left: 8px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 18px;
+      margin-top: 1.5rem;
+    }
+
+    .social-links a {
+      color: var(--text);
+      font-size: 1.3rem;
+      transition: all 0.3s;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(30, 41, 59, 0.8);
+    }
+
+    .social-links a:hover {
+      color: var(--accent);
+      transform: translateY(-5px);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(226, 232, 240, 0.1);
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .camera-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1.2rem;
+        padding: 1rem;
+      }
+      
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .page-header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .page-header p {
+        font-size: 1.1rem;
+      }
+      
+      .search-box {
+        flex-direction: column;
+      }
+      
+      #locationInput {
+        border-radius: 30px;
+        margin-bottom: 12px;
+        border-right: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      
+      #searchButton {
+        border-radius: 30px;
+        border-left: 1px solid rgba(245, 158, 11, 0.3);
+      }
+      
+      .camera-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header/Navigation -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <i class="fas fa-globe-americas"></i>
+        <span>TRIPVERSE IQ</span>
+      </a>
+    <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
+        
+          <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
+          <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
+          <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
+    
+          <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
+          <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1><i class="fas fa-video"></i> TRIPVERSE LIVE CAMS</h1>
+        <p>Experience real-time views from around the world through our network of high-definition cameras. Watch famous landmarks, natural wonders, and cityscapes as they happen.</p>
+      </div>
+      
+      <div class="search-box">
+        <input type="text" id="locationInput" placeholder="Search location (e.g., New York, Paris, Tokyo)">
+        <button id="searchButton"><i class="fas fa-search"></i> Search</button>
+      </div>
+
+      <div class="quick-search">
+        <button onclick="loadCameras('new york')">New York</button>
+        <button onclick="loadCameras('paris')">Paris</button>
+        <button onclick="loadCameras('tokyo')">Tokyo</button>
+        <button onclick="loadCameras('london')">London</button>
+        <button onclick="loadCameras('dubai')">Dubai</button>
+        <button onclick="loadCameras('all')">Show All</button>
+      </div>
+
+      <div class="camera-grid" id="cameraGrid">
+        <!-- Cameras will load here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>TRIPVERSE IQ</h3>
+        <p>Your ultimate travel companion for exploring the world through live cameras, travel guides, and immersive experiences.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Destinations</a></li>
+          <li><a href="live-cams.html">Live Cams</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Popular Locations</h3>
+        <ul>
+          <li><a href="#" onclick="loadCameras('new york')">New York</a></li>
+          <li><a href="#" onclick="loadCameras('paris')">Paris</a></li>
+          <li><a href="#" onclick="loadCameras('tokyo')">Tokyo</a></li>
+          <li><a href="#" onclick="loadCameras('london')">London</a></li>
+          <li><a href="#" onclick="loadCameras('dubai')">Dubai</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Report an Issue</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2023 TRIPVERSE IQ. All rights reserved. | Designed with <i class="fas fa-heart" style="color: #ef4444;"></i> for travelers
+    </div>
+  </footer>
+
+  <script>
+    // Enhanced Camera Database with more locations
+    const cameraDatabase = {
+      "new york": [
+        {
+          title: "Times Square",
+          url: "https://www.earthcam.com/usa/newyork/timessquare/?cam=tsrobo1",
+          description: "The crossroads of the world, featuring the iconic Broadway theaters and dazzling digital billboards."
+        },
+        {
+          title: "Statue of Liberty",
+          url: "https://www.earthcam.com/usa/newyork/statueofliberty/?cam=liberty_str",
+          description: "Live view of Liberty Island with the iconic Statue of Liberty and Manhattan skyline."
+        },
+        {
+          title: "Central Park",
+          url: "https://www.earthcam.com/usa/newyork/centralpark/?cam=centralpark_str",
+          description: "Scenic views of New York's most famous urban park in all seasons."
+        }
+      ],
+      "paris": [
+        {
+          title: "Eiffel Tower",
+          url: "https://www.earthcam.com/world/france/paris/?cam=toureiffel",
+          description: "Panoramic view of Paris from the iconic Eiffel Tower, including the Champ de Mars."
+        },
+        {
+          title: "Louvre Museum",
+          url: "https://www.skylinewebcams.com/en/webcam/france/ile-de-france/paris/louvre.html",
+          description: "View of the Louvre's glass pyramid and courtyard, one of the world's largest museums."
+        }
+      ],
+      "tokyo": [
+        {
+          title: "Shibuya Crossing",
+          url: "https://www.youtube.com/embed/AdUw5RdyZxI",
+          description: "The world's busiest pedestrian crossing with neon lights and towering video screens."
+        },
+        {
+          title: "Tokyo Tower",
+          url: "https://www.skylinewebcams.com/en/webcam/japan/kanto/tokyo/tokyo-tower.html",
+          description: "Iconic communications tower offering panoramic views of Tokyo's skyline."
+        }
+      ],
+      "london": [
+        {
+          title: "London Eye",
+          url: "https://www.skylinewebcams.com/en/webcam/united-kingdom/england/london/london-eye.html",
+          description: "View from the London Eye overlooking the River Thames and Parliament."
+        },
+        {
+          title: "Tower Bridge",
+          url: "https://www.earthcam.com/world/uk/london/?cam=towerbridge",
+          description: "Live view of the iconic bascule and suspension bridge over the River Thames."
+        }
+      ],
+      "dubai": [
+        {
+          title: "Burj Khalifa",
+          url: "https://www.youtube.com/embed/6FpZI2qL0Eg",
+          description: "The world's tallest building and Dubai's glittering downtown skyline."
+        },
+        {
+          title: "Palm Jumeirah",
+          url: "https://www.skylinewebcams.com/en/webcam/united-arab-emirates/dubai/dubai/palm-jumeirah.html",
+          description: "Aerial view of the artificial archipelago shaped like a palm tree."
+        }
+      ],
+      "all": [
+        {
+          title: "Times Square, NY",
+          url: "https://www.earthcam.com/usa/newyork/timessquare/?cam=tsrobo1",
+          description: "The crossroads of the world, featuring the iconic Broadway theaters and dazzling digital billboards."
+        },
+        {
+          title: "Eiffel Tower, Paris",
+          url: "https://www.earthcam.com/world/france/paris/?cam=toureiffel",
+          description: "Panoramic view of Paris from the iconic Eiffel Tower."
+        },
+        {
+          title: "Shibuya Crossing, Tokyo",
+          url: "https://www.youtube.com/embed/AdUw5RdyZxI",
+          description: "The world's busiest pedestrian crossing with neon lights and towering video screens."
+        },
+        {
+          title: "Sydney Harbour, Australia",
+          url: "https://www.youtube.com/embed/6H2R9_nhIq0",
+          description: "Iconic view of the Sydney Opera House and Harbour Bridge."
+        },
+        {
+          title: "Colosseum, Rome",
+          url: "https://www.skylinewebcams.com/en/webcam/italia/lazio/roma/colosseo.html",
+          description: "Live view of the ancient Roman amphitheater, a wonder of the ancient world."
+        },
+        {
+          title: "Christ the Redeemer, Rio",
+          url: "https://www.youtube.com/embed/3Q0bNJUUJ2w",
+          description: "The iconic statue overlooking Rio de Janeiro from Corcovado mountain."
+        },
+        {
+          title: "Grand Canyon, Arizona",
+          url: "https://www.nps.gov/media/webcam/view.htm?id=9DFD6D5E-155D-451F-673BB5F27D5D4B3B",
+          description: "Stunning views of one of the world's most spectacular natural wonders."
+        },
+        {
+          title: "Northern Lights, Norway",
+          url: "https://www.youtube.com/embed/_eQA5-1N9hU",
+          description: "Live stream of the aurora borealis from Tromsø, Norway."
+        }
+      ]
+    };
+
+    // Initialize with popular cameras
+    window.onload = function() {
+      loadCameras('all');
+      
+      // Setup search button
+      document.getElementById('searchButton').addEventListener('click', function() {
+        const location = document.getElementById('locationInput').value.toLowerCase();
+        loadCameras(location);
+      });
+      
+      // Allow Enter key for search
+      document.getElementById('locationInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const location = document.getElementById('locationInput').value.toLowerCase();
+          loadCameras(location);
+        }
+      });
+    };
+
+    function loadCameras(location) {
+      const grid = document.getElementById('cameraGrid');
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;"><div class="loading-spinner"><i class="fas fa-globe fa-spin" style="font-size:3rem;color:var(--accent);"></i><p style="margin-top:1.5rem;font-size:1.2rem;">Loading live cameras around the world...</p></div></div>';
+      
+      // Show the location in search box
+      if (location !== 'all') {
+        document.getElementById('locationInput').value = location.charAt(0).toUpperCase() + location.slice(1);
+      } else {
+        document.getElementById('locationInput').value = '';
+      }
+      
+      // Get cameras for location or show all
+      let cameras = [];
+      if (cameraDatabase[location]) {
+        cameras = cameraDatabase[location];
+      } else if (location === 'all') {
+        cameras = cameraDatabase['all'];
+      } else {
+        // Search through all cameras for partial matches
+        cameras = cameraDatabase['all'].filter(cam => 
+          cam.title.toLowerCase().includes(location) || 
+          cam.description.toLowerCase().includes(location)
+        );
+        
+        if (cameras.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:3rem;">
+              <i class="fas fa-map-marker-alt" style="font-size:3rem;color:var(--accent);margin-bottom:1.5rem;"></i>
+              <h3 style="margin-bottom:1rem;font-size:1.5rem;">No cameras found for "${location}"</h3>
+              <p style="margin-bottom:2rem;font-size:1.1rem;">Try these popular locations instead:</p>
+              <div class="quick-search" style="justify-content:center;">
+                <button onclick="loadCameras('new york')">New York</button>
+                <button onclick="loadCameras('paris')">Paris</button>
+                <button onclick="loadCameras('tokyo')">Tokyo</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+      }
+      
+      // Display cameras with enhanced cards
+      grid.innerHTML = cameras.map(cam => `
+        <div class="camera-card">
+          <iframe class="camera-frame" src="${cam.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <div class="camera-info">
+            <h3>${cam.title} <span class="live-badge">Live Stream</span></h3>
+            <p>${cam.description}</p>
+            <div class="timestamp">
+              <i class="far fa-clock"></i>
+              <span>Last updated: ${new Date().toLocaleTimeString()}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

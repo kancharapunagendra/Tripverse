@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather Prediction | TRIPVERSE IQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('IMAGES/BG4.JPG') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      transition: background 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: blur(6px);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      color: #ffd166;
+    }
+    
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      width: 30px;
+      height: 22px;
+      justify-content: space-between;
+    }
+
+    .menu-toggle span {
+      height: 4px;
+      background: white;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav ul li a i {
+      font-size: 0.9rem;
+    }
+
+    nav ul li a:hover {
+      color: #ffd166;
+    }
+
+    .page-title {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
+      margin: 20px 40px;
+      border-radius: 10px;
+    }
+
+    .page-title h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .weather-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .weather-form {
+      flex: 1 1 500px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .weather-form h2 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus {
+      outline: none;
+      border-color: #ffd166;
+    }
+
+    .suggestions-dropdown {
+      position: absolute;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0 0 6px 6px;
+      z-index: 100;
+      display: none;
+    }
+
+    .suggestions-dropdown div {
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    .suggestions-dropdown div:hover {
+      background: rgba(255, 209, 102, 0.2);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #ffd166;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      background-color: #ffc933;
+      transform: translateY(-2px);
+    }
+
+    .results-container {
+      flex: 1 1 500px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+    }
+
+    .results-container h2 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .current-weather {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .weather-main {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .weather-icon {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      color: #ffd166;
+    }
+
+    .weather-temp {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .weather-desc {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+
+    .weather-details {
+      flex: 1;
+      min-width: 200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-item i {
+      color: #ffd166;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .forecast-container {
+      margin-top: 30px;
+    }
+
+    .forecast-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .forecast-days {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .forecast-day {
+      flex: 1;
+      min-width: 120px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .forecast-day-name {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .forecast-day-icon {
+      font-size: 2rem;
+      margin-bottom: 5px;
+      color: #ffd166;
+    }
+
+    .forecast-day-temp {
+      font-weight: bold;
+    }
+
+    .forecast-day-desc {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+
+    .travel-suggestions {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    .travel-suggestions h3 {
+      margin-bottom: 15px;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .suggestion-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .suggestion-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .suggestion-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .suggestion-title i {
+      color: #ffd166;
+    }
+
+    .carbon-footprint {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 100, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    .carbon-footprint h3 {
+      margin-bottom: 10px;
+      color: #ffd166;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .carbon-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .carbon-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .carbon-label {
+      font-weight: 500;
+    }
+
+    .carbon-value {
+      font-weight: bold;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      color: #ffd166;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      background-color: #000;
+      color: #fff;
+      padding: 40px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      text-align: left;
+    }
+
+    .footer-column h4 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #ffd166;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-column ul li a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-column ul li a:hover {
+      color: #ffd166;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      color: #fff;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: #ffd166;
+    }
+
+    .copyright {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    /* Chatbot Styles */
+    .chatbot-icon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ffd166;
+      color: #000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .chatbot-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .chatbot-container {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      overflow: hidden;
+      display: none;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .chatbot-header {
+      background: #1d2671;
+      color: #fff;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chatbot-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-chatbot {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .chatbot-messages {
+      height: 300px;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f5f5f5;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      border-radius: 18px;
+      max-width: 80%;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .bot-message {
+      background: #e5e5ea;
+      color: #000;
+      border-bottom-left-radius: 5px;
+      align-self: flex-start;
+    }
+
+    .user-message {
+      background: #1d2671;
+      color: #fff;
+      border-bottom-right-radius: 5px;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .chatbot-input {
+      display: flex;
+      padding: 10px;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    .chatbot-input input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .chatbot-input button {
+      background: #1d2671;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .chatbot-input button:hover {
+      background: #ffd166;
+      color: #000;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.95);
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      nav ul.show {
+        display: flex;
+      }
+
+      nav ul li {
+        margin: 10px 0;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .weather-container {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+
+      .page-title {
+        margin: 20px;
+      }
+
+      .forecast-day {
+        min-width: calc(50% - 8px);
+      }
+
+      .chatbot-container {
+        width: 90%;
+        right: 5%;
+        bottom: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-compass"></i>
+      TRIPVERSE IQ
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav>
+      <ul id="navList">
+        <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
+        
+          <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
+          <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+          <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
+          <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
+    
+          <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
+          <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="page-title">
+    <h1><i class="fas fa-cloud-sun"></i> Weather Prediction</h1>
+    <p>Get real-time weather forecasts, travel suggestions, and carbon footprint calculations for your journey. Plan smarter with our AI-powered weather insights.</p>
+  </section>
+
+  <div class="weather-container">
+    <div class="weather-form">
+      <h2><i class="fas fa-search-location"></i> Search Location</h2>
+      <form id="weatherForm">
+        <div class="form-group">
+          <label for="currentLocation">Current Location</label>
+          <input type="text" id="currentLocation" placeholder="Enter your current location" required>
+          <div class="suggestions-dropdown" id="currentLocationSuggestions"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input type="text" id="destination" placeholder="Enter your destination" required>
+          <div class="suggestions-dropdown" id="destinationSuggestions"></div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="travelDate">Travel Date</label>
+            <input type="date" id="travelDate" required>
+          </div>
+          <div class="form-group">
+            <label for="travelMode">Travel Mode</label>
+            <select id="travelMode" required>
+              <option value="driving">Car</option>
+              <option value="bicycling">Bicycle</option>
+              <option value="walking">Walking</option>
+              <option value="transit">Public Transport</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-cloud-sun-rain"></i> Get Weather & Travel Info
+        </button>
+      </form>
+    </div>
+    
+    <div class="results-container">
+      <h2><i class="fas fa-info-circle"></i> Weather & Travel Report</h2>
+      <div id="resultsContent">
+        <div class="initial-message">
+          <p>Enter your current location, destination, and travel details to get real-time weather forecasts, travel suggestions, and carbon footprint calculations.</p>
+          <div style="text-align: center; margin-top: 30px; opacity: 0.7;">
+            <i class="fas fa-cloud-sun" style="font-size: 5rem; color: #ffd166;"></i>
+          </div>
+        </div>
+        
+        <div id="weatherResults" style="display: none;">
+          <div class="current-weather">
+            <div class="weather-main">
+              <div class="weather-icon" id="weatherIcon">
+                <i class="fas fa-sun"></i>
+              </div>
+              <div class="weather-temp" id="currentTemp">24°C</div>
+              <div class="weather-desc" id="weatherDesc">Sunny</div>
+              <div class="weather-location" id="weatherLocation">New Delhi, India</div>
+            </div>
+            
+            <div class="weather-details">
+              <div class="detail-item">
+                <i class="fas fa-temperature-high"></i>
+                <div>
+                  <div>Feels Like</div>
+                  <div id="feelsLike">26°C</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-tint"></i>
+                <div>
+                  <div>Humidity</div>
+                  <div id="humidity">45%</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-wind"></i>
+                <div>
+                  <div>Wind</div>
+                  <div id="windSpeed">12 km/h</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-compress-arrows-alt"></i>
+                <div>
+                  <div>Pressure</div>
+                  <div id="pressure">1012 hPa</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-eye"></i>
+                <div>
+                  <div>Visibility</div>
+                  <div id="visibility">10 km</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-cloud-rain"></i>
+                <div>
+                  <div>Precipitation</div>
+                  <div id="precipitation">0%</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-sun"></i>
+                <div>
+                  <div>UV Index</div>
+                  <div id="uvIndex">6 (High)</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <div>Last Updated</div>
+                  <div id="lastUpdated">Just now</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="forecast-container">
+            <h3 class="forecast-title"><i class="fas fa-calendar-alt"></i> 5-Day Forecast</h3>
+            <div class="forecast-days" id="forecastDays">
+              <!-- Forecast items will be added here by JavaScript -->
+            </div>
+          </div>
+          
+          <div class="travel-suggestions">
+            <h3><i class="fas fa-route"></i> Travel Suggestions</h3>
+            <div id="travelSuggestions">
+              <div class="suggestion-item">
+                <div class="suggestion-title"><i class="fas fa-clock"></i> Travel Time</div>
+                <p id="travelTime">Approximately 45 minutes by car</p>
+              </div>
+              <div class="suggestion-item">
+                <div class="suggestion-title"><i class="fas fa-cloud-rain"></i> Weather Alert</div>
+                <p id="weatherAlert">No significant weather alerts for your travel</p>
+              </div>
+              <div class="suggestion-item">
+                <div class="suggestion-title"><i class="fas fa-bicycle"></i> Bike Suggestion</div>
+                <p id="bikeSuggestion">Great day for biking with sunny weather and mild winds</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="carbon-footprint">
+            <h3><i class="fas fa-leaf"></i> Carbon Footprint</h3>
+            <div class="carbon-item">
+              <span class="carbon-label">Estimated CO2 Emissions:</span>
+              <span class="carbon-value" id="carbonEmissions">2.4 kg</span>
+            </div>
+            <div class="carbon-item">
+              <span class="carbon-label">Equivalent Trees Needed:</span>
+              <span class="carbon-value" id="treesNeeded">0.2 trees</span>
+            </div>
+            <div class="carbon-item">
+              <span class="carbon-label">Cost Offset:</span>
+              <span class="carbon-value" id="carbonCost">₹15</span>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+              <i class="fas fa-info-circle"></i> Consider biking or public transport to reduce your carbon footprint.
+            </p>
+          </div>
+        </div>
+        
+        <div id="loadingIndicator" class="loading" style="display: none;">
+          <i class="fas fa-spinner"></i>
+          <p>Fetching weather data and calculating your travel impact...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h4>TRIPVERSE IQ</h4>
+        <p>Your smart travel companion for real-time insights and seamless journey planning.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Traffic Updates</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Weather Forecast</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Ride Sharing</a></li>
+          <li><a href="#"><i class="fas fa-chevron-right"></i> Trip Planner</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contact Info</h4>
+        <ul>
+          <li><i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka, India</li>
+          <li><i class="fas fa-phone"></i> +91 9876543210</li>
+          <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Chatbot Elements -->
+  <div class="chatbot-icon" onclick="toggleChatbot()">
+    <i class="fas fa-robot"></i>
+  </div>
+
+  <div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header">
+      <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
+      <button class="close-chatbot" onclick="toggleChatbot()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="message bot-message">
+        Hello! I'm your Tripverse assistant. How can I help you with weather and travel planning today?
+      </div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle mobile menu
+    function toggleMenu() {
+      const navList = document.getElementById("navList");
+      navList.classList.toggle("show");
+    }
+
+    // Database of Indian cities for autocomplete
+    const cityDatabase = [
+      "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", 
+      "Kolkata", "Pune", "Jaipur", "Lucknow", "Ahmedabad",
+      "Surat", "Kanpur", "Nagpur", "Visakhapatnam", "Indore",
+      "Thane", "Bhopal", "Patna", "Vadodara", "Ghaziabad"
+    ];
+
+    // Autocomplete functionality
+    document.getElementById('currentLocation').addEventListener('input', function() {
+      showSuggestions(this.value, 'currentLocationSuggestions');
+    });
+
+    document.getElementById('destination').addEventListener('input', function() {
+      showSuggestions(this.value, 'destinationSuggestions');
+    });
+
+    function showSuggestions(query, suggestionBoxId) {
+      const suggestions = document.getElementById(suggestionBoxId);
+      if (query.length < 2) {
+        suggestions.style.display = 'none';
+        return;
+      }
+
+      const filtered = cityDatabase.filter(city => 
+        city.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5);
+
+      if (filtered.length === 0) {
+        suggestions.style.display = 'none';
+        return;
+      }
+
+      suggestions.innerHTML = filtered.map(city => `
+        <div class="suggestion-item" onclick="selectSuggestion('${city}', '${suggestionBoxId.replace('Suggestions', '')}')">
+          ${city}
+        </div>
+      `).join('');
+      suggestions.style.display = 'block';
+    }
+
+    function selectSuggestion(cityName, inputId) {
+      document.getElementById(inputId).value = cityName;
+      document.getElementById(inputId + 'Suggestions').style.display = 'none';
+    }
+
+    // Close suggestions when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.form-group')) {
+        document.getElementById('currentLocationSuggestions').style.display = 'none';
+        document.getElementById('destinationSuggestions').style.display = 'none';
+      }
+    });
+
+    // Weather data and calculation
+    document.getElementById('weatherForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      getWeatherData();
+    });
+
+    // Set default date to today
+    document.getElementById('travelDate').valueAsDate = new Date();
+
+    function getWeatherData() {
+      // Show loading
+      document.getElementById('loadingIndicator').style.display = 'block';
+      document.getElementById('weatherResults').style.display = 'none';
+      document.querySelector('.initial-message').style.display = 'none';
+
+      // Get form values
+      const currentLocation = document.getElementById('currentLocation').value;
+      const destination = document.getElementById('destination').value;
+      const travelDate = document.getElementById('travelDate').value;
+      const travelMode = document.getElementById('travelMode').value;
+
+      // Simulate API call with timeout
+      setTimeout(() => {
+        // For demo purposes, we'll use mock data
+        const mockWeatherData = {
+          location: destination,
+          currentTemp: Math.round(20 + Math.random() * 15),
+          feelsLike: Math.round(20 + Math.random() * 15),
+          weatherDesc: ["Sunny", "Partly Cloudy", "Cloudy", "Rainy", "Thunderstorm"][Math.floor(Math.random() * 5)],
+          humidity: Math.round(30 + Math.random() * 60),
+          windSpeed: Math.round(5 + Math.random() * 20),
+          pressure: Math.round(1000 + Math.random() * 20),
+          visibility: Math.round(5 + Math.random() * 15),
+          precipitation: Math.round(Math.random() * 100),
+          uvIndex: Math.round(1 + Math.random() * 10),
+          lastUpdated: new Date().toLocaleTimeString(),
+          forecast: []
+        };
+
+        // Generate 5-day forecast
+        for (let i = 0; i < 5; i++) {
+          const date = new Date();
+          date.setDate(date.getDate() + i);
+          
+          mockWeatherData.forecast.push({
+            day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            temp: Math.round(20 + Math.random() * 15),
+            desc: ["Sunny", "Partly Cloudy", "Cloudy", "Rainy", "Thunderstorm"][Math.floor(Math.random() * 5)],
+            icon: ["fa-sun", "fa-cloud-sun", "fa-cloud", "fa-cloud-rain", "fa-bolt"][Math.floor(Math.random() * 5)]
+          });
+        }
+
+        // Calculate travel time based on mode
+        let travelTime = "";
+        let distance = Math.round(5 + Math.random() * 50);
+        
+        switch(travelMode) {
+          case "driving":
+            travelTime = `Approximately ${Math.round(distance / 30 * 60)} minutes by car (${distance} km)`;
+            break;
+          case "bicycling":
+            travelTime = `Approximately ${Math.round(distance / 15 * 60)} minutes by bicycle (${distance} km)`;
+            break;
+          case "walking":
+            travelTime = `Approximately ${Math.round(distance / 5 * 60)} minutes walking (${distance} km)`;
+            break;
+          case "transit":
+            travelTime = `Approximately ${Math.round(distance / 20 * 60)} minutes by public transport (${distance} km)`;
+            break;
+        }
+
+        // Calculate carbon emissions
+        let carbonEmissions = 0;
+        let carbonCost = 0;
+        
+        switch(travelMode) {
+          case "driving":
+            carbonEmissions = (distance * 0.12).toFixed(1); // kg CO2
+            carbonCost = Math.round(distance * 0.5); // ₹
+            break;
+          case "bicycling":
+            carbonEmissions = 0;
+            carbonCost = 0;
+            break;
+          case "walking":
+            carbonEmissions = 0;
+            carbonCost = 0;
+            break;
+          case "transit":
+            carbonEmissions = (distance * 0.05).toFixed(1); // kg CO2
+            carbonCost = Math.round(distance * 0.2); // ₹
+            break;
+        }
+
+        // Generate weather alert
+        let weatherAlert = "No significant weather alerts for your travel";
+        if (mockWeatherData.weatherDesc === "Rainy" || mockWeatherData.weatherDesc === "Thunderstorm") {
+          weatherAlert = `Warning: ${mockWeatherData.weatherDesc} expected. Consider postponing travel or taking precautions.`;
+        }
+
+        // Generate bike suggestion
+        let bikeSuggestion = "";
+        if (mockWeatherData.weatherDesc === "Sunny" && mockWeatherData.precipitation < 30) {
+          bikeSuggestion = "Great day for biking with sunny weather and low chance of rain";
+        } else if (mockWeatherData.precipitation > 50) {
+          bikeSuggestion = "Not recommended for biking due to high chance of rain";
+        } else {
+          bikeSuggestion = "Fair conditions for biking, but check weather updates before leaving";
+        }
+
+        // Update UI with all data
+        updateWeatherUI(mockWeatherData, travelTime, weatherAlert, bikeSuggestion, carbonEmissions, carbonCost);
+        
+        // Hide loading and show results
+        document.getElementById('loadingIndicator').style.display = 'none';
+        document.getElementById('weatherResults').style.display = 'block';
+      }, 1500);
+    }
+
+    function updateWeatherUI(weatherData, travelTime, weatherAlert, bikeSuggestion, carbonEmissions, carbonCost) {
+      // Current weather
+      document.getElementById('currentTemp').textContent = weatherData.currentTemp + "°C";
+      document.getElementById('weatherDesc').textContent = weatherData.weatherDesc;
+      document.getElementById('weatherLocation').textContent = weatherData.location;
+      document.getElementById('feelsLike').textContent = weatherData.feelsLike + "°C";
+      document.getElementById('humidity').textContent = weatherData.humidity + "%";
+      document.getElementById('windSpeed').textContent = weatherData.windSpeed + " km/h";
+      document.getElementById('pressure').textContent = weatherData.pressure + " hPa";
+      document.getElementById('visibility').textContent = weatherData.visibility + " km";
+      document.getElementById('precipitation').textContent = weatherData.precipitation + "%";
+      document.getElementById('uvIndex').textContent = weatherData.uvIndex + (weatherData.uvIndex > 7 ? " (Very High)" : weatherData.uvIndex > 5 ? " (High)" : " (Moderate)");
+      document.getElementById('lastUpdated').textContent = weatherData.lastUpdated;
+      
+      // Set weather icon
+      const weatherIcon = document.getElementById('weatherIcon');
+      weatherIcon.innerHTML = '';
+      const icon = document.createElement('i');
+      icon.className = 'fas ' + (
+        weatherData.weatherDesc === "Sunny" ? "fa-sun" :
+        weatherData.weatherDesc === "Partly Cloudy" ? "fa-cloud-sun" :
+        weatherData.weatherDesc === "Cloudy" ? "fa-cloud" :
+        weatherData.weatherDesc === "Rainy" ? "fa-cloud-rain" :
+        "fa-bolt"
+      );
+      weatherIcon.appendChild(icon);
+      
+      // Forecast
+      const forecastDays = document.getElementById('forecastDays');
+      forecastDays.innerHTML = '';
+      weatherData.forecast.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'forecast-day';
+        dayElement.innerHTML = `
+          <div class="forecast-day-name">${day.day}</div>
+          <div class="forecast-day-date">${day.date}</div>
+          <div class="forecast-day-icon"><i class="fas ${day.icon}"></i></div>
+          <div class="forecast-day-temp">${day.temp}°C</div>
+          <div class="forecast-day-desc">${day.desc}</div>
+        `;
+        forecastDays.appendChild(dayElement);
+      });
+      
+      // Travel suggestions
+      document.getElementById('travelTime').textContent = travelTime;
+      document.getElementById('weatherAlert').textContent = weatherAlert;
+      document.getElementById('bikeSuggestion').textContent = bikeSuggestion;
+      
+      // Carbon footprint
+      document.getElementById('carbonEmissions').textContent = carbonEmissions + " kg CO2";
+      document.getElementById('treesNeeded').textContent = (carbonEmissions / 12).toFixed(1) + " trees";
+      document.getElementById('carbonCost').textContent = "₹" + carbonCost;
+    }
+
+    // Chatbot functionality
+    function toggleChatbot() {
+      const chatbot = document.getElementById("chatbot");
+      chatbot.style.display = chatbot.style.display === "block" ? "none" : "block";
+    }
+
+    function sendMessage() {
+      const userInput = document.getElementById("userInput");
+      const chatMessages = document.getElementById("chatMessages");
+      
+      if (userInput.value.trim() === "") return;
+      
+      // Add user message
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user-message";
+      userMessage.textContent = userInput.value;
+      chatMessages.appendChild(userMessage);
+      
+      // Clear input
+      const message = userInput.value;
+      userInput.value = "";
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Simulate bot response after delay
+      setTimeout(() => {
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        
+        // Simple response logic
+        if (message.toLowerCase().includes("weather")) {
+          botMessage.textContent = "The weather section provides real-time forecasts, 5-day predictions, and travel suggestions based on current conditions. Enter your locations to get started.";
+        } 
+        else if (message.toLowerCase().includes("carbon") || message.toLowerCase().includes("footprint")) {
+          botMessage.textContent = "Our carbon calculator estimates emissions based on your travel mode and distance. Biking and walking have zero emissions, while cars produce about 120g CO2 per km.";
+        }
+        else if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+          botMessage.textContent = "Hello! I can help you with weather forecasts and travel planning. Ask me about weather conditions or carbon footprints.";
+        }
+        else {
+          botMessage.textContent = "I'm here to help with weather and travel questions. You can ask about forecasts, travel suggestions, or carbon emissions.";
+        }
+        
+        chatMessages.appendChild(botMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+
+    // Allow pressing Enter to send message
+    document.getElementById("userInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
