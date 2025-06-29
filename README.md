@@ -110,9 +110,6 @@ CREATE TABLE congestion_events (
 );
 ```
 
-## Screenshots
-
-*Include descriptions of key screens if available*
 
 ## Future Roadmap
 
