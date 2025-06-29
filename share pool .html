@@ -1,1359 +1,1541 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Share Pool Planner | TRIPVERSE IQ</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('IMAGES/BG4.JPG') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      transition: background 0.3s ease;
-      overflow-x: hidden;
-    }
-
-    header {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 20px 40px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      backdrop-filter: blur(6px);
-    }
-
-    .logo {
-      font-weight: bold;
-      font-size: 1.8rem;
-      letter-spacing: 1px;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo i {
-      color: #ffd166;
-    }
-    
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-      width: 30px;
-      height: 22px;
-      justify-content: space-between;
-    }
-
-    .menu-toggle span {
-      height: 4px;
-      background: white;
-      border-radius: 2px;
-      transition: 0.3s;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: white;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    nav ul li a i {
-      font-size: 0.9rem;
-    }
-
-    nav ul li a:hover {
-      color: #ffd166;
-    }
-
-    .page-title {
-      text-align: center;
-      padding: 40px 20px;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(6px);
-      margin: 20px 40px;
-      border-radius: 10px;
-    }
-
-    .page-title h1 {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .page-title p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .sharepool-container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 40px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-    }
-
-    .search-form {
-      flex: 1 1 500px;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 30px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(6px);
-    }
-
-    .search-form h2 {
-      margin-bottom: 25px;
-      font-size: 1.8rem;
-      color: #ffd166;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .form-group input, 
-    .form-group select {
-      width: 100%;
-      padding: 12px 15px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 6px;
-      color: white;
-      font-size: 1rem;
-    }
-
-    .form-group input:focus, 
-    .form-group select:focus {
-      outline: none;
-      border-color: #ffd166;
-    }
-
-    .suggestions-dropdown {
-      position: absolute;
-      width: 100%;
-      max-height: 200px;
-      overflow-y: auto;
-      background: rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 0 0 6px 6px;
-      z-index: 100;
-      display: none;
-    }
-
-    .suggestions-dropdown div {
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-
-    .suggestions-dropdown div:hover {
-      background: rgba(255, 209, 102, 0.2);
-    }
-
-    .form-row {
-      display: flex;
-      gap: 15px;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-    }
-
-    .submit-btn {
-      width: 100%;
-      padding: 14px;
-      background-color: #ffd166;
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .submit-btn:hover {
-      background-color: #ffc933;
-      transform: translateY(-2px);
-    }
-
-    .results-container {
-      flex: 1 1 500px;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 30px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(6px);
-    }
-
-    .results-container h2 {
-      margin-bottom: 25px;
-      font-size: 1.8rem;
-      color: #ffd166;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .map-container {
-      height: 300px;
-      width: 100%;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .transport-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .transport-card {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      padding: 15px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 1px solid transparent;
-    }
-
-    .transport-card:hover {
-      border-color: #ffd166;
-      transform: translateY(-3px);
-    }
-
-    .transport-card.selected {
-      background: rgba(255, 209, 102, 0.2);
-      border-color: #ffd166;
-    }
-
-    .transport-card .icon {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      color: #ffd166;
-    }
-
-    .transport-card h4 {
-      margin-bottom: 5px;
-    }
-
-    .transport-card .price {
-      font-weight: bold;
-      color: #ffd166;
-      font-size: 1.1rem;
-    }
-
-    .transport-card .time {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    .pool-matches {
-      margin-top: 30px;
-    }
-
-    .pool-match {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-left: 4px solid #ffd166;
-    }
-
-    .pool-match-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .pool-match h4 {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pool-match .user-rating {
-      color: #ffd166;
-      font-size: 0.9rem;
-    }
-
-    .pool-match .route {
-      margin: 10px 0;
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-
-    .pool-match .details {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-
-    .pool-match .details div {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.9rem;
-    }
-
-    .connect-btn {
-      background: #ffd166;
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .connect-btn:hover {
-      background: #ffc933;
-    }
-
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    .comparison-table th, .comparison-table td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .comparison-table th {
-      background: rgba(255, 209, 102, 0.2);
-      color: #ffd166;
-    }
-
-    .comparison-table tr:hover {
-      background: rgba(255,255,255,0.05);
-    }
-
-    .best-option {
-      background: rgba(76, 175, 80, 0.2) !important;
-      position: relative;
-    }
-
-    .best-option::after {
-      content: "✓ Best Value";
-      position: absolute;
-      right: 10px;
-      color: #4CAF50;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .loading i {
-      font-size: 2rem;
-      color: #ffd166;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    footer {
-      background-color: #000;
-      color: #fff;
-      padding: 40px;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      text-align: left;
-    }
-
-    .footer-column h4 {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      color: #ffd166;
-    }
-
-    .footer-column ul {
-      list-style: none;
-    }
-
-    .footer-column ul li {
-      margin-bottom: 10px;
-    }
-
-    .footer-column ul li a {
-      color: #ccc;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-column ul li a:hover {
-      color: #ffd166;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .social-links a {
-      color: #fff;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-
-    .social-links a:hover {
-      color: #ffd166;
-    }
-
-    .copyright {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #333;
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-
-    /* Chatbot Styles */
-    .chatbot-icon {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: #ffd166;
-      color: #000;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      z-index: 999;
-      transition: all 0.3s ease;
-    }
-
-    .chatbot-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .chatbot-container {
-      position: fixed;
-      bottom: 100px;
-      right: 30px;
-      width: 350px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      overflow: hidden;
-      display: none;
-      z-index: 999;
-      transition: all 0.3s ease;
-    }
-
-    .chatbot-header {
-      background: #1d2671;
-      color: #fff;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chatbot-header h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .close-chatbot {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .chatbot-messages {
-      height: 300px;
-      padding: 15px;
-      overflow-y: auto;
-      background: #f5f5f5;
-    }
-
-    .message {
-      margin-bottom: 15px;
-      padding: 10px 15px;
-      border-radius: 18px;
-      max-width: 80%;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .bot-message {
-      background: #e5e5ea;
-      color: #000;
-      border-bottom-left-radius: 5px;
-      align-self: flex-start;
-    }
-
-    .user-message {
-      background: #1d2671;
-      color: #fff;
-      border-bottom-right-radius: 5px;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-
-    .chatbot-input {
-      display: flex;
-      padding: 10px;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
-
-    .chatbot-input input {
-      flex: 1;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    .chatbot-input button {
-      background: #1d2671;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      margin-left: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .chatbot-input button:hover {
-      background: #ffd166;
-      color: #000;
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: rgba(0, 0, 0, 0.9);
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      border: 1px solid #ffd166;
-      position: relative;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: none;
-      border: none;
-      color: #ffd166;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .modal-title {
-      margin-bottom: 20px;
-      color: #ffd166;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .modal-form .form-group {
-      margin-bottom: 15px;
-    }
-
-    .modal-form label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .modal-form input, .modal-form textarea {
-      width: 100%;
-      padding: 10px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 5px;
-      color: white;
-    }
-
-    .modal-submit {
-      background: #ffd166;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-      .menu-toggle {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share Pool Planner | TRIPVERSE IQ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: url("IMAGES/BG4.JPG") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        transition: background 0.3s ease;
+        overflow-x: hidden;
+      }
+
+      header {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px 40px;
         display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        backdrop-filter: blur(6px);
+      }
+
+      .logo {
+        font-weight: bold;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo i {
+        color: #ffd166;
+      }
+
+      .menu-toggle {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        width: 30px;
+        height: 22px;
+        justify-content: space-between;
+      }
+
+      .menu-toggle span {
+        height: 4px;
+        background: white;
+        border-radius: 2px;
+        transition: 0.3s;
       }
 
       nav ul {
-        display: none;
-        flex-direction: column;
-        background: rgba(0, 0, 0, 0.95);
-        width: 100%;
-        text-align: center;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        padding: 20px 0;
-      }
-
-      nav ul.show {
+        list-style: none;
         display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
       }
 
-      nav ul li {
-        margin: 10px 0;
+      nav ul li a {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      .form-row {
-        flex-direction: column;
-        gap: 0;
+      nav ul li a i {
+        font-size: 0.9rem;
       }
 
-      .sharepool-container {
-        flex-direction: column;
-        padding: 0 20px;
+      nav ul li a:hover {
+        color: #ffd166;
       }
 
       .page-title {
-        margin: 20px;
+        text-align: center;
+        padding: 40px 20px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(6px);
+        margin: 20px 40px;
+        border-radius: 10px;
+      }
+
+      .page-title h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .page-title p {
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .sharepool-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+
+      .search-form {
+        flex: 1 1 500px;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(6px);
+      }
+
+      .search-form h2 {
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        color: #ffd166;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        color: white;
+        font-size: 1rem;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #ffd166;
+      }
+
+      .suggestions-dropdown {
+        position: absolute;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0 0 6px 6px;
+        z-index: 100;
+        display: none;
+      }
+
+      .suggestions-dropdown div {
+        padding: 10px 15px;
+        cursor: pointer;
+      }
+
+      .suggestions-dropdown div:hover {
+        background: rgba(255, 209, 102, 0.2);
+      }
+
+      .form-row {
+        display: flex;
+        gap: 15px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: #ffd166;
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .submit-btn:hover {
+        background-color: #ffc933;
+        transform: translateY(-2px);
+      }
+
+      .results-container {
+        flex: 1 1 500px;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(6px);
+      }
+
+      .results-container h2 {
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        color: #ffd166;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .map-container {
+        height: 300px;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .transport-options {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .transport-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+      }
+
+      .transport-card:hover {
+        border-color: #ffd166;
+        transform: translateY(-3px);
+      }
+
+      .transport-card.selected {
+        background: rgba(255, 209, 102, 0.2);
+        border-color: #ffd166;
+      }
+
+      .transport-card .icon {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: #ffd166;
+      }
+
+      .transport-card h4 {
+        margin-bottom: 5px;
+      }
+
+      .transport-card .price {
+        font-weight: bold;
+        color: #ffd166;
+        font-size: 1.1rem;
+      }
+
+      .transport-card .time {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .pool-matches {
+        margin-top: 30px;
+      }
+
+      .pool-match {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 4px solid #ffd166;
+      }
+
+      .pool-match-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .pool-match h4 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .pool-match .user-rating {
+        color: #ffd166;
+        font-size: 0.9rem;
+      }
+
+      .pool-match .route {
+        margin: 10px 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .pool-match .details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .pool-match .details div {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+      }
+
+      .connect-btn {
+        background: #ffd166;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .connect-btn:hover {
+        background: #ffc933;
+      }
+
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .comparison-table th {
+        background: rgba(255, 209, 102, 0.2);
+        color: #ffd166;
+      }
+
+      .comparison-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .best-option {
+        background: rgba(76, 175, 80, 0.2) !important;
+        position: relative;
+      }
+
+      .best-option::after {
+        content: "✓ Best Value";
+        position: absolute;
+        right: 10px;
+        color: #4caf50;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .loading i {
+        font-size: 2rem;
+        color: #ffd166;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 40px;
+        text-align: center;
+        margin-top: 60px;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        text-align: left;
+      }
+
+      .footer-column h4 {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        color: #ffd166;
+      }
+
+      .footer-column ul {
+        list-style: none;
+      }
+
+      .footer-column ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-column ul li a {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-column ul li a:hover {
+        color: #ffd166;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-links a {
+        color: #fff;
+        font-size: 1.2rem;
+        transition: color 0.3s;
+      }
+
+      .social-links a:hover {
+        color: #ffd166;
+      }
+
+      .copyright {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        font-size: 0.9rem;
+        color: #aaa;
+      }
+
+      /* Chatbot Styles */
+      .chatbot-icon {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ffd166;
+        color: #000;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-icon:hover {
+        transform: scale(1.1);
       }
 
       .chatbot-container {
-        width: 90%;
-        right: 5%;
-        bottom: 80px;
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: none;
+        z-index: 999;
+        transition: all 0.3s ease;
       }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <i class="fas fa-compass"></i>
-      TRIPVERSE IQ
-    </div>
-    <div class="menu-toggle" onclick="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav>
-      <ul id="navList">
-       <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
-        
-          <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
-          <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
-          <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
-    
-          <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
-          <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <section class="page-title">
-    <h1><i class="fas fa-car-side"></i> Smart Share Pool</h1>
-    <p>Find the most affordable and comfortable way to travel by connecting with others going the same way. Compare all options and share costs.</p>
-  </section>
+      .chatbot-header {
+        background: #1d2671;
+        color: #fff;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-  <div class="sharepool-container">
-    <div class="search-form">
-      <h2><i class="fas fa-search-location"></i> Plan Your Trip</h2>
-      <form id="tripForm">
-        <div class="form-group">
-          <label for="fromLocation">From</label>
-          <input type="text" id="fromLocation" placeholder="Current location or address" required>
-          <div class="suggestions-dropdown" id="fromLocationSuggestions"></div>
-        </div>
-        
-        <div class="form-group">
-          <label for="toLocation">To</label>
-          <input type="text" id="toLocation" placeholder="Destination address" required>
-          <div class="suggestions-dropdown" id="toLocationSuggestions"></div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="travelDate">Travel Date</label>
-            <input type="date" id="travelDate" required>
-          </div>
-          <div class="form-group">
-            <label for="travelTime">Approx. Time</label>
-            <input type="time" id="travelTime" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="travelers">Number of People</label>
-          <input type="number" id="travelers" min="1" value="1" required>
-        </div>
-        
-        <button type="submit" class="submit-btn">
-          <i class="fas fa-search"></i> Find Options
-        </button>
-      </form>
-      
-      <div style="margin-top: 30px; text-align: center;">
-        <button class="submit-btn" onclick="openOfferRideModal()" style="background: #1d2671; color: white;">
-          <i class="fas fa-car"></i> Offer a Ride
-        </button>
+      .chatbot-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .close-chatbot {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .chatbot-messages {
+        height: 300px;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f5f5f5;
+      }
+
+      .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 18px;
+        max-width: 80%;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .bot-message {
+        background: #e5e5ea;
+        color: #000;
+        border-bottom-left-radius: 5px;
+        align-self: flex-start;
+      }
+
+      .user-message {
+        background: #1d2671;
+        color: #fff;
+        border-bottom-right-radius: 5px;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+
+      .chatbot-input {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #eee;
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 30px;
+        outline: none;
+        font-size: 0.9rem;
+      }
+
+      .chatbot-input button {
+        background: #1d2671;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .chatbot-input button:hover {
+        background: #ffd166;
+        color: #000;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background: rgba(0, 0, 0, 0.9);
+        padding: 30px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+        border: 1px solid #ffd166;
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: #ffd166;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .modal-title {
+        margin-bottom: 20px;
+        color: #ffd166;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .modal-form .form-group {
+        margin-bottom: 15px;
+      }
+
+      .modal-form label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .modal-form input,
+      .modal-form textarea {
+        width: 100%;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
+        color: white;
+      }
+
+      .modal-submit {
+        background: #ffd166;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      @media (max-width: 768px) {
+        .menu-toggle {
+          display: flex;
+        }
+
+        nav ul {
+          display: none;
+          flex-direction: column;
+          background: rgba(0, 0, 0, 0.95);
+          width: 100%;
+          text-align: center;
+          position: absolute;
+          top: 70px;
+          left: 0;
+          padding: 20px 0;
+        }
+
+        nav ul.show {
+          display: flex;
+        }
+
+        nav ul li {
+          margin: 10px 0;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .sharepool-container {
+          flex-direction: column;
+          padding: 0 20px;
+        }
+
+        .page-title {
+          margin: 20px;
+        }
+
+        .transport-options {
+          grid-template-columns: 1fr;
+        }
+
+        .chatbot-container {
+          width: 90%;
+          right: 5%;
+          bottom: 80px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <i class="fas fa-compass"></i>
+        TRIPVERSE IQ
       </div>
-    </div>
-    
-    <div class="results-container">
-      <h2><i class="fas fa-route"></i> Trip Options</h2>
-      <div id="resultsContent">
-        <div class="initial-message">
-          <p>Enter your trip details to see all available transportation options and potential share pool matches.</p>
-          <div style="text-align: center; margin-top: 30px; opacity: 0.7;">
-            <i class="fas fa-car-side" style="font-size: 5rem; color: #ffd166;"></i>
+      <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav>
+        <ul id="navList">
+          <li>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+          </li>
+
+          <li>
+            <a href="traffic congetion.html"
+              ><i class="fas fa-traffic-light"></i> Traffic</a
+            >
+          </li>
+          <li>
+            <a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a>
+          </li>
+          <li>
+            <a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a>
+          </li>
+          <li>
+            <a href="share pool .html"
+              ><i class="fas fa-car-side"></i> Share Pool</a
+            >
+          </li>
+
+          <li>
+            <a href="mood score.html"
+              ><i class="fas fa-smile"></i> Mood Score</a
+            >
+          </li>
+          <li>
+            <a href="budject.html"
+              ><i class="fas fa-calendar-alt"></i> Budget Planner</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="page-title">
+      <h1><i class="fas fa-car-side"></i> Smart Share Pool</h1>
+      <p>
+        Find the most affordable and comfortable way to travel by connecting
+        with others going the same way. Compare all options and share costs.
+      </p>
+    </section>
+
+    <div class="sharepool-container">
+      <div class="search-form">
+        <h2><i class="fas fa-search-location"></i> Plan Your Trip</h2>
+        <form id="tripForm">
+          <div class="form-group">
+            <label for="fromLocation">From</label>
+            <input
+              type="text"
+              id="fromLocation"
+              placeholder="Current location or address"
+              required
+            />
+            <div
+              class="suggestions-dropdown"
+              id="fromLocationSuggestions"
+            ></div>
           </div>
-        </div>
-        
-        <div id="loadingIndicator" class="loading" style="display: none;">
-          <i class="fas fa-spinner"></i>
-          <p>Finding the best travel options...</p>
-        </div>
-        
-        <div id="tripResults" style="display: none;">
-          <div class="map-container" id="map"></div>
-          
-          <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-bus"></i> Transportation Options
-          </h3>
-          
-          <div class="transport-options" id="transportOptions">
-            <!-- Transport options will be inserted here -->
+
+          <div class="form-group">
+            <label for="toLocation">To</label>
+            <input
+              type="text"
+              id="toLocation"
+              placeholder="Destination address"
+              required
+            />
+            <div class="suggestions-dropdown" id="toLocationSuggestions"></div>
           </div>
-          
-          <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-exchange-alt"></i> Price Comparison
-          </h3>
-          
-          <table class="comparison-table">
-            <thead>
-              <tr>
-                <th>Option</th>
-                <th>Price</th>
-                <th>Time</th>
-                <th>Comfort</th>
-                <th>CO2</th>
-              </tr>
-            </thead>
-            <tbody id="comparisonTable">
-              <!-- Comparison data will be inserted here -->
-            </tbody>
-          </table>
-          
-          <div class="pool-matches">
-            <h3 style="margin: 25px 0 15px; display: flex; align-items: center; gap: 8px;">
-              <i class="fas fa-users"></i> Potential Share Pool Matches
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="travelDate">Travel Date</label>
+              <input type="date" id="travelDate" required />
+            </div>
+            <div class="form-group">
+              <label for="travelTime">Approx. Time</label>
+              <input type="time" id="travelTime" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="travelers">Number of People</label>
+            <input type="number" id="travelers" min="1" value="1" required />
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-search"></i> Find Options
+          </button>
+        </form>
+
+        <div style="margin-top: 30px; text-align: center">
+          <button
+            class="submit-btn"
+            onclick="openOfferRideModal()"
+            style="background: #1d2671; color: white"
+          >
+            <i class="fas fa-car"></i> Offer a Ride
+          </button>
+        </div>
+      </div>
+
+      <div class="results-container">
+        <h2><i class="fas fa-route"></i> Trip Options</h2>
+        <div id="resultsContent">
+          <div class="initial-message">
+            <p>
+              Enter your trip details to see all available transportation
+              options and potential share pool matches.
+            </p>
+            <div style="text-align: center; margin-top: 30px; opacity: 0.7">
+              <i
+                class="fas fa-car-side"
+                style="font-size: 5rem; color: #ffd166"
+              ></i>
+            </div>
+          </div>
+
+          <div id="loadingIndicator" class="loading" style="display: none">
+            <i class="fas fa-spinner"></i>
+            <p>Finding the best travel options...</p>
+          </div>
+
+          <div id="tripResults" style="display: none">
+            <div class="map-container" id="map"></div>
+
+            <h3
+              style="
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <i class="fas fa-bus"></i> Transportation Options
             </h3>
-            
-            <div id="poolMatches">
-              <!-- Pool matches will be inserted here -->
+
+            <div class="transport-options" id="transportOptions">
+              <!-- Transport options will be inserted here -->
+            </div>
+
+            <h3
+              style="
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <i class="fas fa-exchange-alt"></i> Price Comparison
+            </h3>
+
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Option</th>
+                  <th>Price</th>
+                  <th>Time</th>
+                  <th>Comfort</th>
+                  <th>CO2</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonTable">
+                <!-- Comparison data will be inserted here -->
+              </tbody>
+            </table>
+
+            <div class="pool-matches">
+              <h3
+                style="
+                  margin: 25px 0 15px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                "
+              >
+                <i class="fas fa-users"></i> Potential Share Pool Matches
+              </h3>
+
+              <div id="poolMatches">
+                <!-- Pool matches will be inserted here -->
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Offer Ride Modal -->
-  <div class="modal" id="offerRideModal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeOfferRideModal()">&times;</button>
-      <h3 class="modal-title"><i class="fas fa-car"></i> Offer a Ride</h3>
-      <form class="modal-form" id="offerRideForm">
-        <div class="form-group">
-          <label for="offerFrom">From</label>
-          <input type="text" id="offerFrom" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="offerTo">To</label>
-          <input type="text" id="offerTo" required>
-        </div>
-        
-        <div class="form-row">
+    <!-- Offer Ride Modal -->
+    <div class="modal" id="offerRideModal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeOfferRideModal()">
+          &times;
+        </button>
+        <h3 class="modal-title"><i class="fas fa-car"></i> Offer a Ride</h3>
+        <form class="modal-form" id="offerRideForm">
           <div class="form-group">
-            <label for="offerDate">Date</label>
-            <input type="date" id="offerDate" required>
+            <label for="offerFrom">From</label>
+            <input type="text" id="offerFrom" required />
           </div>
+
           <div class="form-group">
-            <label for="offerTime">Time</label>
-            <input type="time" id="offerTime" required>
+            <label for="offerTo">To</label>
+            <input type="text" id="offerTo" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="offerDate">Date</label>
+              <input type="date" id="offerDate" required />
+            </div>
+            <div class="form-group">
+              <label for="offerTime">Time</label>
+              <input type="time" id="offerTime" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="offerSeats">Available Seats</label>
+            <input
+              type="number"
+              id="offerSeats"
+              min="1"
+              max="6"
+              value="1"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="offerPrice">Price per Person (₹)</label>
+            <input type="number" id="offerPrice" min="50" required />
+          </div>
+
+          <div class="form-group">
+            <label for="offerCar">Car Model</label>
+            <input type="text" id="offerCar" required />
+          </div>
+
+          <div class="form-group">
+            <label for="offerNotes">Notes (optional)</label>
+            <textarea id="offerNotes" rows="3"></textarea>
+          </div>
+
+          <button type="submit" class="modal-submit">Submit Ride Offer</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Connect Modal -->
+    <div class="modal" id="connectModal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeConnectModal()">
+          &times;
+        </button>
+        <h3 class="modal-title">
+          <i class="fas fa-user-friends"></i> Connect with Traveler
+        </h3>
+        <div id="connectModalContent">
+          <!-- Content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>TRIPVERSE IQ</h4>
+          <p>
+            Your smart travel companion for real-time insights and seamless
+            journey planning.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
           </div>
         </div>
-        
-        <div class="form-group">
-          <label for="offerSeats">Available Seats</label>
-          <input type="number" id="offerSeats" min="1" max="6" value="1" required>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul>
+            <li>
+              <a href="index.html"><i class="fas fa-chevron-right"></i> Home</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> About Us</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Services</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Contact</a>
+            </li>
+          </ul>
         </div>
-        
-        <div class="form-group">
-          <label for="offerPrice">Price per Person (₹)</label>
-          <input type="number" id="offerPrice" min="50" required>
+        <div class="footer-column">
+          <h4>Services</h4>
+          <ul>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Traffic Updates</a
+              >
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Weather Forecast</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Ride Sharing</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Trip Planner</a>
+            </li>
+          </ul>
         </div>
-        
-        <div class="form-group">
-          <label for="offerCar">Car Model</label>
-          <input type="text" id="offerCar" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="offerNotes">Notes (optional)</label>
-          <textarea id="offerNotes" rows="3"></textarea>
-        </div>
-        
-        <button type="submit" class="modal-submit">Submit Ride Offer</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Connect Modal -->
-  <div class="modal" id="connectModal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeConnectModal()">&times;</button>
-      <h3 class="modal-title"><i class="fas fa-user-friends"></i> Connect with Traveler</h3>
-      <div id="connectModalContent">
-        <!-- Content will be inserted here -->
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <div class="footer-content">
-      <div class="footer-column">
-        <h4>TRIPVERSE IQ</h4>
-        <p>Your smart travel companion for real-time insights and seamless journey planning.</p>
-        <div class="social-links">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <div class="footer-column">
+          <h4>Contact Info</h4>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka, India
+            </li>
+            <li><i class="fas fa-phone"></i> +91 9876543210</li>
+            <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
+          </ul>
         </div>
       </div>
-      <div class="footer-column">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
-        </ul>
+      <div class="copyright">
+        &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
       </div>
-      <div class="footer-column">
-        <h4>Services</h4>
-        <ul>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Traffic Updates</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Weather Forecast</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Ride Sharing</a></li>
-          <li><a href="#"><i class="fas fa-chevron-right"></i> Trip Planner</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h4>Contact Info</h4>
-        <ul>
-          <li><i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka, India</li>
-          <li><i class="fas fa-phone"></i> +91 9876543210</li>
-          <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
-        </ul>
-      </div>
-    </div>
-    <div class="copyright">
-      &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
-    </div>
-  </footer>
+    </footer>
 
-  <!-- Chatbot Elements -->
-  <div class="chatbot-icon" onclick="toggleChatbot()">
-    <i class="fas fa-robot"></i>
-  </div>
-
-  <div class="chatbot-container" id="chatbot">
-    <div class="chatbot-header">
-      <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
-      <button class="close-chatbot" onclick="toggleChatbot()">
-        <i class="fas fa-times"></i>
-      </button>
+    <!-- Chatbot Elements -->
+    <div class="chatbot-icon" onclick="toggleChatbot()">
+      <i class="fas fa-robot"></i>
     </div>
-    <div class="chatbot-messages" id="chatMessages">
-      <div class="message bot-message">
-        Hello! I'm your Tripverse assistant. How can I help you with ride sharing today?
+
+    <div class="chatbot-container" id="chatbot">
+      <div class="chatbot-header">
+        <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
+        <button class="close-chatbot" onclick="toggleChatbot()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="chatbot-messages" id="chatMessages">
+        <div class="message bot-message">
+          Hello! I'm your Tripverse assistant. How can I help you with ride
+          sharing today?
+        </div>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
       </div>
     </div>
-    <div class="chatbot-input">
-      <input type="text" id="userInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    // Toggle mobile menu
-    function toggleMenu() {
-      const navList = document.getElementById("navList");
-      navList.classList.toggle("show");
-    }
-
-    // Database of Indian cities and routes with realistic pricing data
-    const cityDatabase = [
-      { name: "Mumbai", lat: 19.0760, lng: 72.8777 },
-      { name: "Delhi", lat: 28.7041, lng: 77.1025 },
-      { name: "Bangalore", lat: 12.9716, lng: 77.5946 },
-      { name: "Hyderabad", lat: 17.3850, lng: 78.4867 },
-      { name: "Chennai", lat: 13.0827, lng: 80.2707 },
-      { name: "Kolkata", lat: 22.5726, lng: 88.3639 },
-      { name: "Pune", lat: 18.5204, lng: 73.8567 },
-      { name: "Jaipur", lat: 26.9124, lng: 75.7873 },
-      { name: "Goa", lat: 15.2993, lng: 74.1240 },
-      { name: "Ahmedabad", lat: 23.0225, lng: 72.5714 },
-      { name: "Noida", lat: 28.5355, lng: 77.3910 },
-      { name: "Gurgaon", lat: 28.4595, lng: 77.0266 },
-      { name: "Chandigarh", lat: 30.7333, lng: 76.7794 },
-      { name: "Lucknow", lat: 26.8467, lng: 80.9462 },
-      { name: "Indore", lat: 22.7196, lng: 75.8577 },
-      { name: "Bhopal", lat: 23.2599, lng: 77.4126 },
-      { name: "Patna", lat: 25.5941, lng: 85.1376 },
-      { name: "Visakhapatnam", lat: 17.6868, lng: 83.2185 },
-      { name: "Coimbatore", lat: 11.0168, lng: 76.9558 },
-      { name: "Kochi", lat: 9.9312, lng: 76.2673 }
-    ];
-
-    // Sample pool matches data
-    const poolMatchesData = [
-      {
-        id: 1,
-        name: "Rahul Sharma",
-        rating: 4.5,
-        from: "Bangalore",
-        to: "Mumbai",
-        date: "2023-12-15",
-        time: "08:00",
-        seats: 2,
-        price: 1200,
-        car: "Hyundai Creta",
-        notes: "Non-smoker, can pick up from city center",
-        waypoints: ["Bangalore", "Tumkur", "Chitradurga", "Hubli", "Belgaum", "Pune", "Mumbai"]
-      },
-      {
-        id: 2,
-        name: "Priya Patel",
-        rating: 4.8,
-        from: "Bangalore",
-        to: "Chennai",
-        date: "2023-12-15",
-        time: "07:30",
-        seats: 3,
-        price: 800,
-        car: "Maruti Swift",
-        notes: "Can accommodate luggage, music lover",
-        waypoints: ["Bangalore", "Hosur", "Krishnagiri", "Vellore", "Chennai"]
-      },
-      {
-        id: 3,
-        name: "Amit Singh",
-        rating: 4.2,
-        from: "Bangalore",
-        to: "Hyderabad",
-        date: "2023-12-16",
-        time: "06:00",
-        seats: 1,
-        price: 1500,
-        car: "Toyota Innova",
-        notes: "Early morning departure, stops for breakfast",
-        waypoints: ["Bangalore", "Anantapur", "Kurnool", "Hyderabad"]
-      }
-    ];
-
-    // Autocomplete functionality
-    document.getElementById('fromLocation').addEventListener('input', function() {
-      showSuggestions(this.value, 'fromLocationSuggestions');
-    });
-
-    document.getElementById('toLocation').addEventListener('input', function() {
-      showSuggestions(this.value, 'toLocationSuggestions');
-    });
-
-    function showSuggestions(query, suggestionBoxId) {
-      const suggestions = document.getElementById(suggestionBoxId);
-      if (query.length < 2) {
-        suggestions.style.display = 'none';
-        return;
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // Toggle mobile menu
+      function toggleMenu() {
+        const navList = document.getElementById("navList");
+        navList.classList.toggle("show");
       }
 
-      const filtered = cityDatabase.filter(city => 
-        city.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 5);
+      // Database of Indian cities and routes with realistic pricing data
+      const cityDatabase = [
+        { name: "Mumbai", lat: 19.076, lng: 72.8777 },
+        { name: "Delhi", lat: 28.7041, lng: 77.1025 },
+        { name: "Bangalore", lat: 12.9716, lng: 77.5946 },
+        { name: "Hyderabad", lat: 17.385, lng: 78.4867 },
+        { name: "Chennai", lat: 13.0827, lng: 80.2707 },
+        { name: "Kolkata", lat: 22.5726, lng: 88.3639 },
+        { name: "Pune", lat: 18.5204, lng: 73.8567 },
+        { name: "Jaipur", lat: 26.9124, lng: 75.7873 },
+        { name: "Goa", lat: 15.2993, lng: 74.124 },
+        { name: "Ahmedabad", lat: 23.0225, lng: 72.5714 },
+        { name: "Noida", lat: 28.5355, lng: 77.391 },
+        { name: "Gurgaon", lat: 28.4595, lng: 77.0266 },
+        { name: "Chandigarh", lat: 30.7333, lng: 76.7794 },
+        { name: "Lucknow", lat: 26.8467, lng: 80.9462 },
+        { name: "Indore", lat: 22.7196, lng: 75.8577 },
+        { name: "Bhopal", lat: 23.2599, lng: 77.4126 },
+        { name: "Patna", lat: 25.5941, lng: 85.1376 },
+        { name: "Visakhapatnam", lat: 17.6868, lng: 83.2185 },
+        { name: "Coimbatore", lat: 11.0168, lng: 76.9558 },
+        { name: "Kochi", lat: 9.9312, lng: 76.2673 },
+      ];
 
-      if (filtered.length === 0) {
-        suggestions.style.display = 'none';
-        return;
-      }
+      // Sample pool matches data
+      const poolMatchesData = [
+        {
+          id: 1,
+          name: "Rahul Sharma",
+          rating: 4.5,
+          from: "Bangalore",
+          to: "Mumbai",
+          date: "2023-12-15",
+          time: "08:00",
+          seats: 2,
+          price: 1200,
+          car: "Hyundai Creta",
+          notes: "Non-smoker, can pick up from city center",
+          waypoints: [
+            "Bangalore",
+            "Tumkur",
+            "Chitradurga",
+            "Hubli",
+            "Belgaum",
+            "Pune",
+            "Mumbai",
+          ],
+        },
+        {
+          id: 2,
+          name: "Priya Patel",
+          rating: 4.8,
+          from: "Bangalore",
+          to: "Chennai",
+          date: "2023-12-15",
+          time: "07:30",
+          seats: 3,
+          price: 800,
+          car: "Maruti Swift",
+          notes: "Can accommodate luggage, music lover",
+          waypoints: [
+            "Bangalore",
+            "Hosur",
+            "Krishnagiri",
+            "Vellore",
+            "Chennai",
+          ],
+        },
+        {
+          id: 3,
+          name: "Amit Singh",
+          rating: 4.2,
+          from: "Bangalore",
+          to: "Hyderabad",
+          date: "2023-12-16",
+          time: "06:00",
+          seats: 1,
+          price: 1500,
+          car: "Toyota Innova",
+          notes: "Early morning departure, stops for breakfast",
+          waypoints: ["Bangalore", "Anantapur", "Kurnool", "Hyderabad"],
+        },
+      ];
 
-      suggestions.innerHTML = filtered.map(city => `
-        <div class="suggestion-item" onclick="selectSuggestion('${city.name}', '${suggestionBoxId.replace('Suggestions', '')}')">
+      // Autocomplete functionality
+      document
+        .getElementById("fromLocation")
+        .addEventListener("input", function () {
+          showSuggestions(this.value, "fromLocationSuggestions");
+        });
+
+      document
+        .getElementById("toLocation")
+        .addEventListener("input", function () {
+          showSuggestions(this.value, "toLocationSuggestions");
+        });
+
+      function showSuggestions(query, suggestionBoxId) {
+        const suggestions = document.getElementById(suggestionBoxId);
+        if (query.length < 2) {
+          suggestions.style.display = "none";
+          return;
+        }
+
+        const filtered = cityDatabase
+          .filter((city) =>
+            city.name.toLowerCase().includes(query.toLowerCase())
+          )
+          .slice(0, 5);
+
+        if (filtered.length === 0) {
+          suggestions.style.display = "none";
+          return;
+        }
+
+        suggestions.innerHTML = filtered
+          .map(
+            (city) => `
+        <div class="suggestion-item" onclick="selectSuggestion('${
+          city.name
+        }', '${suggestionBoxId.replace("Suggestions", "")}')">
           ${city.name}
         </div>
-      `).join('');
-      suggestions.style.display = 'block';
-    }
-
-    function selectSuggestion(cityName, inputId) {
-      document.getElementById(inputId).value = cityName;
-      document.getElementById(inputId + 'Suggestions').style.display = 'none';
-    }
-
-    // Close suggestions when clicking elsewhere
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.form-group')) {
-        document.getElementById('fromLocationSuggestions').style.display = 'none';
-        document.getElementById('toLocationSuggestions').style.display = 'none';
-      }
-    });
-
-    // Initialize map
-    let map;
-    function initMap(from, to) {
-      if (map) map.remove();
-      
-      const fromCity = cityDatabase.find(c => c.name.toLowerCase() === from.toLowerCase());
-      const toCity = cityDatabase.find(c => c.name.toLowerCase() === to.toLowerCase());
-      
-      if (!fromCity || !toCity) return;
-      
-      map = L.map('map').setView([(fromCity.lat + toCity.lat)/2, (fromCity.lng + toCity.lng)/2], 7);
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-      
-      // Add markers
-      L.marker([fromCity.lat, fromCity.lng]).addTo(map)
-        .bindPopup(`<b>From:</b> ${fromCity.name}`)
-        .openPopup();
-      
-      L.marker([toCity.lat, toCity.lng]).addTo(map)
-        .bindPopup(`<b>To:</b> ${toCity.name}`);
-      
-      // Add line between points
-      L.polyline([
-        [fromCity.lat, fromCity.lng],
-        [toCity.lat, toCity.lng]
-      ], {color: '#ffd166', weight: 3}).addTo(map);
-    }
-
-    // Calculate distance between two points in km
-    function calculateDistance(from, to) {
-      const fromCity = cityDatabase.find(c => c.name.toLowerCase() === from.toLowerCase());
-      const toCity = cityDatabase.find(c => c.name.toLowerCase() === to.toLowerCase());
-      
-      if (!fromCity || !toCity) return 0;
-      
-      const R = 6371; // Earth's radius in km
-      const dLat = (toCity.lat - fromCity.lat) * Math.PI / 180;
-      const dLng = (toCity.lng - fromCity.lng) * Math.PI / 180;
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(fromCity.lat * Math.PI / 180) * Math.cos(toCity.lat * Math.PI / 180) * 
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    }
-
-    // Trip calculation
-    document.getElementById('tripForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      findTripOptions();
-    });
-
-    function findTripOptions() {
-      // Get form values
-      const from = document.getElementById('fromLocation').value;
-      const to = document.getElementById('toLocation').value;
-      const date = document.getElementById('travelDate').value;
-      const time = document.getElementById('travelTime').value;
-      const travelers = parseInt(document.getElementById('travelers').value);
-
-      if (!from || !to) {
-        alert('Please enter both origin and destination');
-        return;
+      `
+          )
+          .join("");
+        suggestions.style.display = "block";
       }
 
-      // Show loading
-      document.getElementById('loadingIndicator').style.display = 'block';
-      document.getElementById('tripResults').style.display = 'none';
-      document.querySelector('.initial-message').style.display = 'none';
+      function selectSuggestion(cityName, inputId) {
+        document.getElementById(inputId).value = cityName;
+        document.getElementById(inputId + "Suggestions").style.display = "none";
+      }
 
-      // Simulate API delay
-      setTimeout(() => {
-        // Initialize map
-        initMap(from, to);
-        
-        // Calculate distance
-        const distance = calculateDistance(from, to);
-        
-        // Generate transport options
-        generateTransportOptions(from, to, distance, travelers);
-        
-        // Generate pool matches
-        generatePoolMatches(from, to, date);
-        
-        // Show results
-        document.getElementById('loadingIndicator').style.display = 'none';
-        document.getElementById('tripResults').style.display = 'block';
-      }, 1500);
-    }
-
-    function generateTransportOptions(from, to, distance, travelers) {
-      const transportOptions = document.getElementById('transportOptions');
-      transportOptions.innerHTML = '';
-      
-      // Sample transport options with realistic Indian pricing
-      const options = [
-        {
-          id: 'car_pool',
-          name: 'Share Pool',
-          icon: 'fa-users',
-          price: Math.round(distance * 8 / travelers),
-          time: Math.round(distance / 50 * 60) + ' mins',
-          comfort: 'Medium',
-          co2: Math.round(distance * 0.12),
-          selected: true
-        },
-        {
-          id: 'train',
-          name: 'Train',
-          icon: 'fa-train',
-          price: Math.round(distance * 1.5 * travelers),
-          time: Math.round(distance / 60 * 60) + ' mins',
-          comfort: 'Medium',
-          co2: Math.round(distance * 0.05),
-          selected: false
-        },
-        {
-          id: 'bus',
-          name: 'Bus',
-          icon: 'fa-bus',
-          price: Math.round(distance * 2 * travelers),
-          time: Math.round(distance / 45 * 60) + ' mins',
-          comfort: 'Low',
-          co2: Math.round(distance * 0.08),
-          selected: false
-        },
-        {
-          id: 'flight',
-          name: 'Flight',
-          icon: 'fa-plane',
-          price: Math.round(distance * 5 * travelers),
-          time: Math.round(distance / 500 * 60 + 120) + ' mins',
-          comfort: 'High',
-          co2: Math.round(distance * 0.25),
-          selected: false
-        },
-        {
-          id: 'taxi',
-          name: 'Taxi',
-          icon: 'fa-taxi',
-          price: Math.round(distance * 12 * travelers),
-          time: Math.round(distance / 50 * 60) + ' mins',
-          comfort: 'High',
-          co2: Math.round(distance * 0.15),
-          selected: false
-        },
-        {
-          id: 'bike',
-          name: 'Bike Rental',
-          icon: 'fa-motorcycle',
-          price: Math.round(distance * 3 * travelers),
-          time: Math.round(distance / 40 * 60) + ' mins',
-          comfort: 'Low',
-          co2: Math.round(distance * 0.07),
-          selected: false
+      // Close suggestions when clicking elsewhere
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".form-group")) {
+          document.getElementById("fromLocationSuggestions").style.display =
+            "none";
+          document.getElementById("toLocationSuggestions").style.display =
+            "none";
         }
-      ];
-      
-      // Add options to UI
-      options.forEach(option => {
-        const card = document.createElement('div');
-        card.className = `transport-card ${option.selected ? 'selected' : ''}`;
-        card.innerHTML = `
+      });
+
+      // Initialize map
+      let map;
+      function initMap(from, to) {
+        if (map) map.remove();
+
+        const fromCity = cityDatabase.find(
+          (c) => c.name.toLowerCase() === from.toLowerCase()
+        );
+        const toCity = cityDatabase.find(
+          (c) => c.name.toLowerCase() === to.toLowerCase()
+        );
+
+        if (!fromCity || !toCity) return;
+
+        map = L.map("map").setView(
+          [(fromCity.lat + toCity.lat) / 2, (fromCity.lng + toCity.lng) / 2],
+          7
+        );
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        // Add markers
+        L.marker([fromCity.lat, fromCity.lng])
+          .addTo(map)
+          .bindPopup(`<b>From:</b> ${fromCity.name}`)
+          .openPopup();
+
+        L.marker([toCity.lat, toCity.lng])
+          .addTo(map)
+          .bindPopup(`<b>To:</b> ${toCity.name}`);
+
+        // Add line between points
+        L.polyline(
+          [
+            [fromCity.lat, fromCity.lng],
+            [toCity.lat, toCity.lng],
+          ],
+          { color: "#ffd166", weight: 3 }
+        ).addTo(map);
+      }
+
+      // Calculate distance between two points in km
+      function calculateDistance(from, to) {
+        const fromCity = cityDatabase.find(
+          (c) => c.name.toLowerCase() === from.toLowerCase()
+        );
+        const toCity = cityDatabase.find(
+          (c) => c.name.toLowerCase() === to.toLowerCase()
+        );
+
+        if (!fromCity || !toCity) return 0;
+
+        const R = 6371; // Earth's radius in km
+        const dLat = ((toCity.lat - fromCity.lat) * Math.PI) / 180;
+        const dLng = ((toCity.lng - fromCity.lng) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((fromCity.lat * Math.PI) / 180) *
+            Math.cos((toCity.lat * Math.PI) / 180) *
+            Math.sin(dLng / 2) *
+            Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+
+      // Trip calculation
+      document
+        .getElementById("tripForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          findTripOptions();
+        });
+
+      function findTripOptions() {
+        // Get form values
+        const from = document.getElementById("fromLocation").value;
+        const to = document.getElementById("toLocation").value;
+        const date = document.getElementById("travelDate").value;
+        const time = document.getElementById("travelTime").value;
+        const travelers = parseInt(document.getElementById("travelers").value);
+
+        if (!from || !to) {
+          alert("Please enter both origin and destination");
+          return;
+        }
+
+        // Show loading
+        document.getElementById("loadingIndicator").style.display = "block";
+        document.getElementById("tripResults").style.display = "none";
+        document.querySelector(".initial-message").style.display = "none";
+
+        // Simulate API delay
+        setTimeout(() => {
+          // Initialize map
+          initMap(from, to);
+
+          // Calculate distance
+          const distance = calculateDistance(from, to);
+
+          // Generate transport options
+          generateTransportOptions(from, to, distance, travelers);
+
+          // Generate pool matches
+          generatePoolMatches(from, to, date);
+
+          // Show results
+          document.getElementById("loadingIndicator").style.display = "none";
+          document.getElementById("tripResults").style.display = "block";
+        }, 1500);
+      }
+
+      function generateTransportOptions(from, to, distance, travelers) {
+        const transportOptions = document.getElementById("transportOptions");
+        transportOptions.innerHTML = "";
+
+        // Sample transport options with realistic Indian pricing
+        const options = [
+          {
+            id: "car_pool",
+            name: "Share Pool",
+            icon: "fa-users",
+            price: Math.round((distance * 8) / travelers),
+            time: Math.round((distance / 50) * 60) + " mins",
+            comfort: "Medium",
+            co2: Math.round(distance * 0.12),
+            selected: true,
+          },
+          {
+            id: "train",
+            name: "Train",
+            icon: "fa-train",
+            price: Math.round(distance * 1.5 * travelers),
+            time: Math.round((distance / 60) * 60) + " mins",
+            comfort: "Medium",
+            co2: Math.round(distance * 0.05),
+            selected: false,
+          },
+          {
+            id: "bus",
+            name: "Bus",
+            icon: "fa-bus",
+            price: Math.round(distance * 2 * travelers),
+            time: Math.round((distance / 45) * 60) + " mins",
+            comfort: "Low",
+            co2: Math.round(distance * 0.08),
+            selected: false,
+          },
+          {
+            id: "flight",
+            name: "Flight",
+            icon: "fa-plane",
+            price: Math.round(distance * 5 * travelers),
+            time: Math.round((distance / 500) * 60 + 120) + " mins",
+            comfort: "High",
+            co2: Math.round(distance * 0.25),
+            selected: false,
+          },
+          {
+            id: "taxi",
+            name: "Taxi",
+            icon: "fa-taxi",
+            price: Math.round(distance * 12 * travelers),
+            time: Math.round((distance / 50) * 60) + " mins",
+            comfort: "High",
+            co2: Math.round(distance * 0.15),
+            selected: false,
+          },
+          {
+            id: "bike",
+            name: "Bike Rental",
+            icon: "fa-motorcycle",
+            price: Math.round(distance * 3 * travelers),
+            time: Math.round((distance / 40) * 60) + " mins",
+            comfort: "Low",
+            co2: Math.round(distance * 0.07),
+            selected: false,
+          },
+        ];
+
+        // Add options to UI
+        options.forEach((option) => {
+          const card = document.createElement("div");
+          card.className = `transport-card ${
+            option.selected ? "selected" : ""
+          }`;
+          card.innerHTML = `
           <div class="icon"><i class="fas ${option.icon}"></i></div>
           <h4>${option.name}</h4>
-          <div class="price">₹${option.price.toLocaleString('en-IN')}</div>
+          <div class="price">₹${option.price.toLocaleString("en-IN")}</div>
           <div class="time">${option.time}</div>
         `;
-        card.addEventListener('click', () => selectTransportOption(option.id));
-        transportOptions.appendChild(card);
-      });
-      
-      // Generate comparison table
-      generateComparisonTable(options);
-    }
-    
-    function selectTransportOption(id) {
-      // Remove selected class from all cards
-      document.querySelectorAll('.transport-card').forEach(card => {
-        card.classList.remove('selected');
-      });
-      
-      // Add selected class to clicked card
-      const selectedCard = document.querySelector(`.transport-card:nth-child(${
-        ['car_pool', 'train', 'bus', 'flight', 'taxi', 'bike'].indexOf(id) + 1
-      })`);
-      if (selectedCard) selectedCard.classList.add('selected');
-      
-      // Update best option in comparison table
-      updateBestOption(id);
-    }
-    
-    function generateComparisonTable(options) {
-      const tableBody = document.getElementById('comparisonTable');
-      tableBody.innerHTML = '';
-      
-      options.forEach(option => {
-        const row = document.createElement('tr');
-        if (option.selected) row.classList.add('best-option');
-        row.innerHTML = `
+          card.addEventListener("click", () =>
+            selectTransportOption(option.id)
+          );
+          transportOptions.appendChild(card);
+        });
+
+        // Generate comparison table
+        generateComparisonTable(options);
+      }
+
+      function selectTransportOption(id) {
+        // Remove selected class from all cards
+        document.querySelectorAll(".transport-card").forEach((card) => {
+          card.classList.remove("selected");
+        });
+
+        // Add selected class to clicked card
+        const selectedCard = document.querySelector(
+          `.transport-card:nth-child(${
+            ["car_pool", "train", "bus", "flight", "taxi", "bike"].indexOf(id) +
+            1
+          })`
+        );
+        if (selectedCard) selectedCard.classList.add("selected");
+
+        // Update best option in comparison table
+        updateBestOption(id);
+      }
+
+      function generateComparisonTable(options) {
+        const tableBody = document.getElementById("comparisonTable");
+        tableBody.innerHTML = "";
+
+        options.forEach((option) => {
+          const row = document.createElement("tr");
+          if (option.selected) row.classList.add("best-option");
+          row.innerHTML = `
           <td><i class="fas ${option.icon}"></i> ${option.name}</td>
-          <td>₹${option.price.toLocaleString('en-IN')}</td>
+          <td>₹${option.price.toLocaleString("en-IN")}</td>
           <td>${option.time}</td>
           <td>${option.comfort}</td>
           <td>${option.co2} kg</td>
         `;
-        row.addEventListener('click', () => selectTransportOption(option.id));
-        tableBody.appendChild(row);
-      });
-    }
-    
-    function updateBestOption(id) {
-      // Remove best-option class from all rows
-      document.querySelectorAll('#comparisonTable tr').forEach(row => {
-        row.classList.remove('best-option');
-      });
-      
-      // Add best-option class to selected row
-      const selectedRow = document.querySelector(`#comparisonTable tr:nth-child(${
-        ['car_pool', 'train', 'bus', 'flight', 'taxi', 'bike'].indexOf(id) + 1
-      })`);
-      if (selectedRow) selectedRow.classList.add('best-option');
-    }
-    
-    function generatePoolMatches(from, to, date) {
-      const poolMatchesContainer = document.getElementById('poolMatches');
-      poolMatchesContainer.innerHTML = '';
-      
-      // Filter matches by route and date (simplified for demo)
-      const matches = poolMatchesData.filter(match => 
-        (match.from.toLowerCase() === from.toLowerCase() && 
-         match.to.toLowerCase() === to.toLowerCase()) ||
-        (match.from.toLowerCase() === to.toLowerCase() && 
-         match.to.toLowerCase() === from.toLowerCase())
-      );
-      
-      if (matches.length === 0) {
-        poolMatchesContainer.innerHTML = `
+          row.addEventListener("click", () => selectTransportOption(option.id));
+          tableBody.appendChild(row);
+        });
+      }
+
+      function updateBestOption(id) {
+        // Remove best-option class from all rows
+        document.querySelectorAll("#comparisonTable tr").forEach((row) => {
+          row.classList.remove("best-option");
+        });
+
+        // Add best-option class to selected row
+        const selectedRow = document.querySelector(
+          `#comparisonTable tr:nth-child(${
+            ["car_pool", "train", "bus", "flight", "taxi", "bike"].indexOf(id) +
+            1
+          })`
+        );
+        if (selectedRow) selectedRow.classList.add("best-option");
+      }
+
+      function generatePoolMatches(from, to, date) {
+        const poolMatchesContainer = document.getElementById("poolMatches");
+        poolMatchesContainer.innerHTML = "";
+
+        // Filter matches by route and date (simplified for demo)
+        const matches = poolMatchesData.filter(
+          (match) =>
+            (match.from.toLowerCase() === from.toLowerCase() &&
+              match.to.toLowerCase() === to.toLowerCase()) ||
+            (match.from.toLowerCase() === to.toLowerCase() &&
+              match.to.toLowerCase() === from.toLowerCase())
+        );
+
+        if (matches.length === 0) {
+          poolMatchesContainer.innerHTML = `
           <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 8px;">
             <p>No share pool matches found for this route.</p>
             <button class="connect-btn" onclick="openOfferRideModal()" style="margin-top: 10px;">
@@ -1361,13 +1543,13 @@
             </button>
           </div>
         `;
-        return;
-      }
-      
-      matches.forEach(match => {
-        const matchElement = document.createElement('div');
-        matchElement.className = 'pool-match';
-        matchElement.innerHTML = `
+          return;
+        }
+
+        matches.forEach((match) => {
+          const matchElement = document.createElement("div");
+          matchElement.className = "pool-match";
+          matchElement.innerHTML = `
           <div class="pool-match-header">
             <h4><i class="fas fa-user"></i> ${match.name} <span class="user-rating">${match.rating} ★</span></h4>
             <div class="price">₹${match.price}</div>
@@ -1387,160 +1569,191 @@
             </button>
           </div>
         `;
-        poolMatchesContainer.appendChild(matchElement);
-      });
-    }
-    
-    // Modal functions
-    function openOfferRideModal() {
-      document.getElementById('offerRideModal').style.display = 'flex';
-    }
-    
-    function closeOfferRideModal() {
-      document.getElementById('offerRideModal').style.display = 'none';
-    }
-    
-    function openConnectModal(matchId) {
-      const match = poolMatchesData.find(m => m.id === matchId);
-      if (!match) return;
-      
-      const modalContent = document.getElementById('connectModalContent');
-      modalContent.innerHTML = `
+          poolMatchesContainer.appendChild(matchElement);
+        });
+      }
+
+      // Modal functions
+      function openOfferRideModal() {
+        document.getElementById("offerRideModal").style.display = "flex";
+      }
+
+      function closeOfferRideModal() {
+        document.getElementById("offerRideModal").style.display = "none";
+      }
+
+      function openConnectModal(matchId) {
+        const match = poolMatchesData.find((m) => m.id === matchId);
+        if (!match) return;
+
+        const modalContent = document.getElementById("connectModalContent");
+        modalContent.innerHTML = `
         <div style="margin-bottom: 20px;">
           <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-            <i class="fas fa-user"></i> ${match.name} <span style="color: #ffd166;">${match.rating} ★</span>
+            <i class="fas fa-user"></i> ${
+              match.name
+            } <span style="color: #ffd166;">${match.rating} ★</span>
           </h4>
           <p><i class="fas fa-car"></i> ${match.car}</p>
-          <p><i class="fas fa-map-marker-alt"></i> ${match.from} → ${match.to}</p>
-          <p><i class="far fa-calendar-alt"></i> ${match.date} at ${match.time}</p>
+          <p><i class="fas fa-map-marker-alt"></i> ${match.from} → ${
+          match.to
+        }</p>
+          <p><i class="far fa-calendar-alt"></i> ${match.date} at ${
+          match.time
+        }</p>
           <p><i class="fas fa-chair"></i> ${match.seats} seats available</p>
           <p><i class="fas fa-rupee-sign"></i> ₹${match.price} per person</p>
-          <p style="margin-top: 15px;"><i class="fas fa-info-circle"></i> ${match.notes}</p>
+          <p style="margin-top: 15px;"><i class="fas fa-info-circle"></i> ${
+            match.notes
+          }</p>
         </div>
-        
+
         <div id="connectForm">
           <div class="form-group">
             <label for="connectSeats">Number of Seats Needed</label>
-            <input type="number" id="connectSeats" min="1" max="${match.seats}" value="1">
+            <input type="number" id="connectSeats" min="1" max="${
+              match.seats
+            }" value="1">
           </div>
           <div class="form-group">
             <label for="connectMessage">Message</label>
-            <textarea id="connectMessage" rows="3" placeholder="Hi ${match.name.split(' ')[0]}, I'd like to join your ride..."></textarea>
+            <textarea id="connectMessage" rows="3" placeholder="Hi ${
+              match.name.split(" ")[0]
+            }, I'd like to join your ride..."></textarea>
           </div>
           <button class="modal-submit" onclick="sendConnectionRequest(${matchId})">
             <i class="fas fa-paper-plane"></i> Send Request
           </button>
         </div>
-        
+
         <div id="connectSuccess" style="display: none; text-align: center; padding: 20px;">
           <i class="fas fa-check-circle" style="font-size: 3rem; color: #4CAF50; margin-bottom: 15px;"></i>
           <h4>Request Sent!</h4>
-          <p>${match.name.split(' ')[0]} will contact you soon to confirm the ride details.</p>
+          <p>${
+            match.name.split(" ")[0]
+          } will contact you soon to confirm the ride details.</p>
           <button class="modal-submit" onclick="closeConnectModal()" style="margin-top: 15px;">
             Close
           </button>
         </div>
       `;
-      
-      document.getElementById('connectModal').style.display = 'flex';
-    }
-    
-    function closeConnectModal() {
-      document.getElementById('connectModal').style.display = 'none';
-    }
-    
-    function sendConnectionRequest(matchId) {
-      // In a real app, this would send a request to the server
-      document.getElementById('connectForm').style.display = 'none';
-      document.getElementById('connectSuccess').style.display = 'block';
-    }
-    
-    // Handle offer ride form submission
-    document.getElementById('offerRideForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Get form values
-      const from = document.getElementById('offerFrom').value;
-      const to = document.getElementById('offerTo').value;
-      const date = document.getElementById('offerDate').value;
-      const time = document.getElementById('offerTime').value;
-      const seats = document.getElementById('offerSeats').value;
-      const price = document.getElementById('offerPrice').value;
-      const car = document.getElementById('offerCar').value;
-      const notes = document.getElementById('offerNotes').value;
-      
-      // In a real app, this would send the data to the server
-      alert(`Ride offer submitted!\nFrom: ${from}\nTo: ${to}\nDate: ${date}\nTime: ${time}\nSeats: ${seats}\nPrice: ₹${price}\nCar: ${car}`);
-      
-      // Close modal
-      closeOfferRideModal();
-    });
 
-    // Chatbot functionality
-    function toggleChatbot() {
-      const chatbot = document.getElementById("chatbot");
-      chatbot.style.display = chatbot.style.display === "block" ? "none" : "block";
-    }
-
-    function sendMessage() {
-      const userInput = document.getElementById("userInput");
-      const chatMessages = document.getElementById("chatMessages");
-      
-      if (userInput.value.trim() === "") return;
-      
-      // Add user message
-      const userMessage = document.createElement("div");
-      userMessage.className = "message user-message";
-      userMessage.textContent = userInput.value;
-      chatMessages.appendChild(userMessage);
-      
-      // Clear input
-      const message = userInput.value;
-      userInput.value = "";
-      
-      // Scroll to bottom
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      
-      // Simulate bot response after delay
-      setTimeout(() => {
-        const botMessage = document.createElement("div");
-        botMessage.className = "message bot-message";
-        
-        // Simple response logic
-        if (message.toLowerCase().includes("share") || message.toLowerCase().includes("pool")) {
-          botMessage.textContent = "The share pool feature helps you find others traveling the same route so you can split costs. Just enter your trip details to see available matches.";
-        } 
-        else if (message.toLowerCase().includes("save") || message.toLowerCase().includes("cheap")) {
-          botMessage.textContent = "Share pooling can save you up to 70% compared to taxis! You can also compare prices of trains, buses, and flights to find the most affordable option.";
-        }
-        else if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
-          botMessage.textContent = "Hello! I can help you with ride sharing and trip planning. Ask me about saving money or finding travel companions.";
-        }
-        else if (message.toLowerCase().includes("safety")) {
-          botMessage.textContent = "All share pool users are verified. You can check ratings and reviews before connecting. We recommend meeting in public places and sharing trip details with friends/family.";
-        }
-        else {
-          botMessage.textContent = "I'm here to help with your travel planning questions. You can ask about ride sharing, cost comparisons, or how to offer a ride to others.";
-        }
-        
-        chatMessages.appendChild(botMessage);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 1000);
-    }
-
-    // Allow pressing Enter to send message
-    document.getElementById("userInput").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        sendMessage();
+        document.getElementById("connectModal").style.display = "flex";
       }
-    });
-    
-    // Set default date to tomorrow
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('travelDate').valueAsDate = tomorrow;
-    document.getElementById('offerDate').valueAsDate = tomorrow;
-  </script>
-</body>
+
+      function closeConnectModal() {
+        document.getElementById("connectModal").style.display = "none";
+      }
+
+      function sendConnectionRequest(matchId) {
+        // In a real app, this would send a request to the server
+        document.getElementById("connectForm").style.display = "none";
+        document.getElementById("connectSuccess").style.display = "block";
+      }
+
+      // Handle offer ride form submission
+      document
+        .getElementById("offerRideForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Get form values
+          const from = document.getElementById("offerFrom").value;
+          const to = document.getElementById("offerTo").value;
+          const date = document.getElementById("offerDate").value;
+          const time = document.getElementById("offerTime").value;
+          const seats = document.getElementById("offerSeats").value;
+          const price = document.getElementById("offerPrice").value;
+          const car = document.getElementById("offerCar").value;
+          const notes = document.getElementById("offerNotes").value;
+
+          // In a real app, this would send the data to the server
+          alert(
+            `Ride offer submitted!\nFrom: ${from}\nTo: ${to}\nDate: ${date}\nTime: ${time}\nSeats: ${seats}\nPrice: ₹${price}\nCar: ${car}`
+          );
+
+          // Close modal
+          closeOfferRideModal();
+        });
+
+      // Chatbot functionality
+      function toggleChatbot() {
+        const chatbot = document.getElementById("chatbot");
+        chatbot.style.display =
+          chatbot.style.display === "block" ? "none" : "block";
+      }
+
+      function sendMessage() {
+        const userInput = document.getElementById("userInput");
+        const chatMessages = document.getElementById("chatMessages");
+
+        if (userInput.value.trim() === "") return;
+
+        // Add user message
+        const userMessage = document.createElement("div");
+        userMessage.className = "message user-message";
+        userMessage.textContent = userInput.value;
+        chatMessages.appendChild(userMessage);
+
+        // Clear input
+        const message = userInput.value;
+        userInput.value = "";
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Simulate bot response after delay
+        setTimeout(() => {
+          const botMessage = document.createElement("div");
+          botMessage.className = "message bot-message";
+
+          // Simple response logic
+          if (
+            message.toLowerCase().includes("share") ||
+            message.toLowerCase().includes("pool")
+          ) {
+            botMessage.textContent =
+              "The share pool feature helps you find others traveling the same route so you can split costs. Just enter your trip details to see available matches.";
+          } else if (
+            message.toLowerCase().includes("save") ||
+            message.toLowerCase().includes("cheap")
+          ) {
+            botMessage.textContent =
+              "Share pooling can save you up to 70% compared to taxis! You can also compare prices of trains, buses, and flights to find the most affordable option.";
+          } else if (
+            message.toLowerCase().includes("hello") ||
+            message.toLowerCase().includes("hi")
+          ) {
+            botMessage.textContent =
+              "Hello! I can help you with ride sharing and trip planning. Ask me about saving money or finding travel companions.";
+          } else if (message.toLowerCase().includes("safety")) {
+            botMessage.textContent =
+              "All share pool users are verified. You can check ratings and reviews before connecting. We recommend meeting in public places and sharing trip details with friends/family.";
+          } else {
+            botMessage.textContent =
+              "I'm here to help with your travel planning questions. You can ask about ride sharing, cost comparisons, or how to offer a ride to others.";
+          }
+
+          chatMessages.appendChild(botMessage);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+      }
+
+      // Allow pressing Enter to send message
+      document
+        .getElementById("userInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+
+      // Set default date to tomorrow
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById("travelDate").valueAsDate = tomorrow;
+      document.getElementById("offerDate").valueAsDate = tomorrow;
+    </script>
+  </body>
 </html>

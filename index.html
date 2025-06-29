@@ -1,1016 +1,1147 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TRIPVERSE IQ</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    /* Intro Animation Styles */
-    .intro-animation {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: black;
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .intro-video {
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('IMAGES/BG4.JPG') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      transition: background 0.3s ease;
-      overflow-x: hidden;
-    }
-
-    header {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 20px 40px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      backdrop-filter: blur(6px);
-    }
-
-    .logo {
-      font-weight: bold;
-      font-size: 1.8rem;
-      letter-spacing: 1px;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo i {
-      color: #ffd166;
-    }
-    
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-      width: 30px;
-      height: 22px;
-      justify-content: space-between;
-    }
-
-    .menu-toggle span {
-      height: 4px;
-      background: white;
-      border-radius: 2px;
-      transition: 0.3s;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: white;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    nav ul li a i {
-      font-size: 0.9rem;
-    }
-
-    nav ul li a:hover {
-      color: #ffd166;
-    }
-
-    .hero {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      padding: 80px 40px;
-      color: white;
-      animation: fadeIn 1.2s ease-in-out;
-    }
-
-    .hero-text {
-      flex: 1 1 400px;
-      animation: slideUp 1s ease-out;
-    }
-
-    .hero-text h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-      line-height: 1.3;
-    }
-
-    .hero-text h1 span {
-      color: #ffd166;
-    }
-
-    .hero-text p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      max-width: 520px;
-    }
-
-    .hero-text button {
-      padding: 12px 28px;
-      background-color: white;
-      color: #1d2671;
-      border: none;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hero-text button:hover {
-      background-color: #ffd166;
-      color: #000;
-    }
-
-    .hero-image {
-      flex: 1 1 400px;
-      text-align: center;
-    }
-
-    .hero-image img {
-      width: 100%;
-      max-width: 420px;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 60px 40px;
-      backdrop-filter: blur(10px);
-    }
-
-    .section-box {
-      background: rgba(255, 255, 255, 0.12);
-      color: white;
-      padding: 25px 20px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-
-    .section-box i {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-      color: #ffd166;
-    }
-
-    .section-box h3 {
-      margin-bottom: 10px;
-      font-size: 1.3rem;
-    }
-
-    .section-box p {
-      font-size: 0.95rem;
-      opacity: 0.9;
-    }
-
-    .section-box:hover {
-      transform: translateY(-6px);
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .traffic-section {
-      padding: 60px 40px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .traffic-content, .weather-content {
-      flex: 1 1 480px;
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .traffic-content h2, .weather-content h2 {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .traffic-content h2 i, .weather-content h2 i {
-      color: #ffd166;
-    }
-
-    .traffic-frame, .weather-frame {
-      width: 100%;
-      height: 400px;
-      border: none;
-      border-radius: 10px;
-    }
-
-    .info-section {
-      padding: 40px;
-      background-color: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(6px);
-      text-align: center;
-    }
-
-    .info-section h3 {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-      color: #ffd166;
-    }
-
-    .info-section p {
-      font-size: 1rem;
-      max-width: 900px;
-      margin: auto;
-      line-height: 1.6;
-    }
-
-    footer {
-      background-color: #000;
-      color: #fff;
-      padding: 40px;
-      text-align: center;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      text-align: left;
-    }
-
-    .footer-column h4 {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      color: #ffd166;
-    }
-
-    .footer-column ul {
-      list-style: none;
-    }
-
-    .footer-column ul li {
-      margin-bottom: 10px;
-    }
-
-    .footer-column ul li a {
-      color: #ccc;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-column ul li a:hover {
-      color: #ffd166;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .social-links a {
-      color: #fff;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-
-    .social-links a:hover {
-      color: #ffd166;
-    }
-
-    .copyright {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #333;
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-
-    /* Chatbot Styles */
-    .chatbot-icon {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: #ffd166;
-      color: #000;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      z-index: 999;
-      transition: all 0.3s ease;
-    }
-
-    .chatbot-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .chatbot-container {
-      position: fixed;
-      bottom: 100px;
-      right: 30px;
-      width: 350px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      overflow: hidden;
-      display: none;
-      z-index: 999;
-      transition: all 0.3s ease;
-    }
-
-    .chatbot-header {
-      background: #1d2671;
-      color: #fff;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chatbot-header h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .close-chatbot {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .chatbot-messages {
-      height: 300px;
-      padding: 15px;
-      overflow-y: auto;
-      background: #f5f5f5;
-    }
-
-    .message {
-      margin-bottom: 15px;
-      padding: 10px 15px;
-      border-radius: 18px;
-      max-width: 80%;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .bot-message {
-      background: #e5e5ea;
-      color: #000;
-      border-bottom-left-radius: 5px;
-      align-self: flex-start;
-    }
-
-    .user-message {
-      background: #1d2671;
-      color: #fff;
-      border-bottom-right-radius: 5px;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-
-    .chatbot-input {
-      display: flex;
-      padding: 10px;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
-
-    .chatbot-input input {
-      flex: 1;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    .chatbot-input button {
-      background: #1d2671;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      margin-left: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .chatbot-input button:hover {
-      background: #ffd166;
-      color: #000;
-    }
-
-    /* Rating Popup Styles */
-    .rating-popup {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0,0,0,0.9);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      z-index: 1000;
-      border: 1px solid #ffd166;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.4s ease;
-      display: block;
-    }
-    
-    .rating-popup.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .rating-container {
-      position: relative;
-    }
-  
-    .close-rating {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: #ffd166;
-      color: #000;
-      border: none;
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    
-    .rating-stars {
-      font-size: 24px;
-      margin: 15px 0;
-      color: #555;
-      display: flex;
-      justify-content: center;
-    }
-  
-    .rating-stars span {
-      cursor: pointer;
-      transition: color 0.2s;
-      margin: 0 2px;
-    }
-  
-    .rating-stars span:hover,
-    .rating-stars span.active {
-      color: #ffd166;
-    }
-  
-    .rating-text {
-      font-size: 12px;
-      margin-bottom: 10px;
-      text-align: center;
-      color: #aaa;
-    }
-  
-    #feedbackText {
-      width: 100%;
-      height: 80px;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      resize: none;
-    }
-  
-    .submit-rating {
-      background: #ffd166;
-      color: #000;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-  
-    .submit-rating:hover {
-      background: #ffc233;
-    }
-  
-    .thank-you-message {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-      color: #ffd166;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        flex-direction: column;
-        text-align: center;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRIPVERSE IQ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Intro Animation Styles */
+      .intro-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
-      .hero-text {
-        text-align: center;
-        margin-bottom: 40px;
+      .intro-video {
+        max-width: 100%;
+        max-height: 100%;
       }
 
-      .hero-text p {
-        margin-left: auto;
-        margin-right: auto;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: url("IMAGES/BG4.JPG") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        transition: background 0.3s ease;
+        overflow-x: hidden;
+      }
+
+      header {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px 40px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        backdrop-filter: blur(6px);
+      }
+
+      .logo {
+        font-weight: bold;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo i {
+        color: #ffd166;
       }
 
       .menu-toggle {
-        display: flex;
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        width: 30px;
+        height: 22px;
+        justify-content: space-between;
+      }
+
+      .menu-toggle span {
+        height: 4px;
+        background: white;
+        border-radius: 2px;
+        transition: 0.3s;
       }
 
       nav ul {
-        display: none;
-        flex-direction: column;
-        background: rgba(0, 0, 0, 0.95);
-        width: 100%;
-        text-align: center;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        padding: 20px 0;
-      }
-
-      nav ul.show {
+        list-style: none;
         display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
       }
 
-      nav ul li {
-        margin: 10px 0;
+      nav ul li a {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      nav ul li a i {
+        font-size: 0.9rem;
+      }
+
+      nav ul li a:hover {
+        color: #ffd166;
+      }
+
+      .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 80px 40px;
+        color: white;
+        animation: fadeIn 1.2s ease-in-out;
+      }
+
+      .hero-text {
+        flex: 1 1 400px;
+        animation: slideUp 1s ease-out;
+      }
+
+      .hero-text h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        line-height: 1.3;
+      }
+
+      .hero-text h1 span {
+        color: #ffd166;
+      }
+
+      .hero-text p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        max-width: 520px;
+      }
+
+      .hero-text button {
+        padding: 12px 28px;
+        background-color: white;
+        color: #1d2671;
+        border: none;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .hero-text button:hover {
+        background-color: #ffd166;
+        color: #000;
+      }
+
+      .hero-image {
+        flex: 1 1 400px;
+        text-align: center;
+      }
+
+      .hero-image img {
+        width: 100%;
+        max-width: 420px;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 60px 40px;
+        backdrop-filter: blur(10px);
+      }
+
+      .section-box {
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+        padding: 25px 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .section-box i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: #ffd166;
+      }
+
+      .section-box h3 {
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .section-box p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .section-box:hover {
+        transform: translateY(-6px);
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .traffic-section {
+        padding: 60px 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .traffic-content,
+      .weather-content {
+        flex: 1 1 480px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .traffic-content h2,
+      .weather-content h2 {
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .traffic-content h2 i,
+      .weather-content h2 i {
+        color: #ffd166;
+      }
+
+      .traffic-frame,
+      .weather-frame {
+        width: 100%;
+        height: 400px;
+        border: none;
+        border-radius: 10px;
+      }
+
+      .info-section {
+        padding: 40px;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(6px);
+        text-align: center;
+      }
+
+      .info-section h3 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: #ffd166;
+      }
+
+      .info-section p {
+        font-size: 1rem;
+        max-width: 900px;
+        margin: auto;
+        line-height: 1.6;
+      }
+
+      footer {
+        background-color: #000;
+        color: #fff;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        text-align: left;
+      }
+
+      .footer-column h4 {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        color: #ffd166;
+      }
+
+      .footer-column ul {
+        list-style: none;
+      }
+
+      .footer-column ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-column ul li a {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-column ul li a:hover {
+        color: #ffd166;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .social-links a {
+        color: #fff;
+        font-size: 1.2rem;
+        transition: color 0.3s;
+      }
+
+      .social-links a:hover {
+        color: #ffd166;
+      }
+
+      .copyright {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        font-size: 0.9rem;
+        color: #aaa;
+      }
+
+      /* Chatbot Styles */
+      .chatbot-icon {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #ffd166;
+        color: #000;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-icon:hover {
+        transform: scale(1.1);
       }
 
       .chatbot-container {
-        width: 90%;
-        right: 5%;
-        bottom: 80px;
-      }
-
-      .rating-popup {
-        width: 90%;
-        left: 5%;
+        position: fixed;
         bottom: 100px;
+        right: 30px;
+        width: 350px;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: none;
+        z-index: 999;
+        transition: all 0.3s ease;
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Intro Animation Section -->
-  <div class="intro-animation" id="introAnimation">
-    <video class="intro-video" autoplay muted>
-      <source src="C:\Users\Hp\OneDrive\Desktop\hacksagon demo project\hacksagon demo project\hacksagon demo project\intro animation.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
 
-  <div id="mainContent" style="display: none;">
-    <header>
-      <div class="logo">
-        <i class="fas fa-compass"></i>
-        TRIPVERSE IQ
-      </div>
-      <div class="menu-toggle" onclick="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <nav>
-        <ul id="navList">
-          <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
-          <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-          <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
-          <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
-          <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
-          <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
-        </ul>
-      </nav>
-    </header>
+      .chatbot-header {
+        background: #1d2671;
+        color: #fff;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    <section class="hero">
-      <div class="hero-text">
-        <h1>We create high quality <span>digital solutions</span></h1>
-        <p>Helping brands craft seamless user experiences and stunning website designs across all devices.</p>
-        <button><i class="fas fa-rocket"></i> Discover More</button>
-      </div>
-      <div class="hero-image">
-        <img src="IMAGES/PIC1_prev_ui - Copy (2).png" alt="Digital Illustration">
-      </div>
-    </section>
+      .chatbot-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    <section class="traffic-section">
-      <div class="traffic-content">
-        <h2><i class="fas fa-traffic-light"></i> Live Traffic - Bengaluru</h2>
-        <iframe class="traffic-frame" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15555.41155008683!2d77.5946!3d12.9716!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c885dfb7%3A0x163f00d9bd8cbe49!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1719501032921!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
-      </div>
-      <div class="weather-content">
-        <h2><i class="fas fa-cloud-sun"></i> Live Weather - Bengaluru</h2>
-        <iframe class="weather-frame" src="https://embed.windy.com/embed2.html?lat=12.9716&lon=77.5946&detailLat=12.9716&detailLon=77.5946&width=650&height=450&zoom=10&level=surface&overlay=wind&menu=true&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0"></iframe>
-      </div>
-    </section>
+      .close-chatbot {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
 
-    <section class="section">
-      <div class="section-box">
-        <i class="fas fa-traffic-light"></i>
-        <h3>01. Traffic Congestion</h3>
-        <p>Live view of busy routes with congestion alerts.</p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-cloud-sun-rain"></i>
-        <h3>02. Live Weather</h3>
-        <p>Plan ahead with real-time weather conditions.</p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-video"></i>
-        <h3>03. Open Cameras</h3>
-        <p>See the roads live via open camera feeds.</p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-car-pool"></i>
-        <h3>04. Share Pool</h3>
-        <p>Connect and travel together safely.</p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-comments"></i>
-        <h3>05. Live Chat Help</h3>
-        <p>Instant support anytime during your journey.</p>
-      </div>
-      <div class="section-box" onclick="window.location.href='main-link.html'">
-        <i class="fas fa-smile-beam"></i>
-        <h3><a href="mood score.html" class="text-link">06. Mood Score</a></h3>
-        <p><a href="mood score.html" class="text-link">Smart mood-based destination suggestions.</a></p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-calendar-check"></i>
-        <h3>07. Budget Planner</h3>
-        <p>Optimize costs for your travel plans.</p>
-      </div>
-      <div class="section-box">
-        <i class="fas fa-wallet"></i>
-        <h3>08. Cheapest Travel</h3>
-        <p>Get the lowest fare options in one place.</p>
-      </div>
-    </section>
+      .chatbot-messages {
+        height: 300px;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f5f5f5;
+      }
 
-    <section class="info-section">
-      <h3>About TRIPVERSE IQ</h3>
-      <p>
-        Tripverse IQ is a smart travel platform that helps users plan better journeys with live insights. From traffic congestion to real-time weather and shared travel options, we empower smarter decisions. Join thousands who trust Tripverse for efficient, safe, and budget-friendly trips.
-      </p>
-    </section>
+      .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 18px;
+        max-width: 80%;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
 
-    <footer>
-      <div class="footer-content">
-        <div class="footer-column">
-          <h4>TRIPVERSE IQ</h4>
-          <p>Your smart travel companion for real-time insights and seamless journey planning.</p>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      .bot-message {
+        background: #e5e5ea;
+        color: #000;
+        border-bottom-left-radius: 5px;
+        align-self: flex-start;
+      }
+
+      .user-message {
+        background: #1d2671;
+        color: #fff;
+        border-bottom-right-radius: 5px;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+
+      .chatbot-input {
+        display: flex;
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #eee;
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 30px;
+        outline: none;
+        font-size: 0.9rem;
+      }
+
+      .chatbot-input button {
+        background: #1d2671;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .chatbot-input button:hover {
+        background: #ffd166;
+        color: #000;
+      }
+
+      /* Rating Popup Styles */
+      .rating-popup {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        border: 1px solid #ffd166;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        display: block;
+      }
+
+      .rating-popup.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .rating-container {
+        position: relative;
+      }
+
+      .close-rating {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #ffd166;
+        color: #000;
+        border: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .rating-stars {
+        font-size: 24px;
+        margin: 15px 0;
+        color: #555;
+        display: flex;
+        justify-content: center;
+      }
+
+      .rating-stars span {
+        cursor: pointer;
+        transition: color 0.2s;
+        margin: 0 2px;
+      }
+
+      .rating-stars span:hover,
+      .rating-stars span.active {
+        color: #ffd166;
+      }
+
+      .rating-text {
+        font-size: 12px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: #aaa;
+      }
+
+      #feedbackText {
+        width: 100%;
+        height: 80px;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        resize: none;
+      }
+
+      .submit-rating {
+        background: #ffd166;
+        color: #000;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      .submit-rating:hover {
+        background: #ffc233;
+      }
+
+      .thank-you-message {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+        color: #ffd166;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .hero-text {
+          text-align: center;
+          margin-bottom: 40px;
+        }
+
+        .hero-text p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .menu-toggle {
+          display: flex;
+        }
+
+        nav ul {
+          display: none;
+          flex-direction: column;
+          background: rgba(0, 0, 0, 0.95);
+          width: 100%;
+          text-align: center;
+          position: absolute;
+          top: 70px;
+          left: 0;
+          padding: 20px 0;
+        }
+
+        nav ul.show {
+          display: flex;
+        }
+
+        nav ul li {
+          margin: 10px 0;
+        }
+
+        .chatbot-container {
+          width: 90%;
+          right: 5%;
+          bottom: 80px;
+        }
+
+        .rating-popup {
+          width: 90%;
+          left: 5%;
+          bottom: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Intro Animation Section -->
+    <div class="intro-animation" id="introAnimation">
+      <video class="intro-video" autoplay muted>
+        <source
+          src="C:\Users\Hp\OneDrive\Desktop\hacksagon demo project\hacksagon demo project\hacksagon demo project\intro animation.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div id="mainContent" style="display: none">
+      <header>
+        <div class="logo">
+          <i class="fas fa-compass"></i>
+          TRIPVERSE IQ
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <nav>
+          <ul id="navList">
+            <li>
+              <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            </li>
+            <li>
+              <a href="traffic congetion.html"
+                ><i class="fas fa-traffic-light"></i> Traffic</a
+              >
+            </li>
+            <li>
+              <a href="weather .html"
+                ><i class="fas fa-cloud-sun"></i> Weather</a
+              >
+            </li>
+            <li>
+              <a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a>
+            </li>
+            <li>
+              <a href="share pool .html"
+                ><i class="fas fa-car-side"></i> Share Pool</a
+              >
+            </li>
+            <li>
+              <a href="mood score.html"
+                ><i class="fas fa-smile"></i> Mood Score</a
+              >
+            </li>
+            <li>
+              <a href="budject.html"
+                ><i class="fas fa-calendar-alt"></i> Budget Planner</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-text">
+          <h1>We create high quality <span>digital solutions</span></h1>
+          <p>
+            Helping brands craft seamless user experiences and stunning website
+            designs across all devices.
+          </p>
+          <button><i class="fas fa-rocket"></i> Discover More</button>
+        </div>
+        <div class="hero-image">
+          <img
+            src="IMAGES/PIC1_prev_ui - Copy (2).png"
+            alt="Digital Illustration"
+          />
+        </div>
+      </section>
+
+      <section class="traffic-section">
+        <div class="traffic-content">
+          <h2><i class="fas fa-traffic-light"></i> Live Traffic - Bengaluru</h2>
+          <iframe
+            class="traffic-frame"
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15555.41155008683!2d77.5946!3d12.9716!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c885dfb7%3A0x163f00d9bd8cbe49!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1719501032921!5m2!1sen!2sin"
+            allowfullscreen=""
+            loading="lazy"
+          ></iframe>
+        </div>
+        <div class="weather-content">
+          <h2><i class="fas fa-cloud-sun"></i> Live Weather - Bengaluru</h2>
+          <iframe
+            class="weather-frame"
+            src="https://embed.windy.com/embed2.html?lat=12.9716&lon=77.5946&detailLat=12.9716&detailLon=77.5946&width=650&height=450&zoom=10&level=surface&overlay=wind&menu=true&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"
+            frameborder="0"
+          ></iframe>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-box">
+          <i class="fas fa-traffic-light"></i>
+          <h3>01. Traffic Congestion</h3>
+          <p>Live view of busy routes with congestion alerts.</p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-cloud-sun-rain"></i>
+          <h3>02. Live Weather</h3>
+          <p>Plan ahead with real-time weather conditions.</p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-video"></i>
+          <h3>03. Open Cameras</h3>
+          <p>See the roads live via open camera feeds.</p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-car-pool"></i>
+          <h3>04. Share Pool</h3>
+          <p>Connect and travel together safely.</p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-comments"></i>
+          <h3>05. Live Chat Help</h3>
+          <p>Instant support anytime during your journey.</p>
+        </div>
+        <div
+          class="section-box"
+          onclick="window.location.href='main-link.html'"
+        >
+          <i class="fas fa-smile-beam"></i>
+          <h3>
+            <a href="mood score.html" class="text-link">06. Mood Score</a>
+          </h3>
+          <p>
+            <a href="mood score.html" class="text-link"
+              >Smart mood-based destination suggestions.</a
+            >
+          </p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-calendar-check"></i>
+          <h3>07. Budget Planner</h3>
+          <p>Optimize costs for your travel plans.</p>
+        </div>
+        <div class="section-box">
+          <i class="fas fa-wallet"></i>
+          <h3>08. Cheapest Travel</h3>
+          <p>Get the lowest fare options in one place.</p>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <h3>About TRIPVERSE IQ</h3>
+        <p>
+          Tripverse IQ is a smart travel platform that helps users plan better
+          journeys with live insights. From traffic congestion to real-time
+          weather and shared travel options, we empower smarter decisions. Join
+          thousands who trust Tripverse for efficient, safe, and budget-friendly
+          trips.
+        </p>
+      </section>
+
+      <footer>
+        <div class="footer-content">
+          <div class="footer-column">
+            <h4>TRIPVERSE IQ</h4>
+            <p>
+              Your smart travel companion for real-time insights and seamless
+              journey planning.
+            </p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          <div class="footer-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li>
+                <a href="index.html"
+                  ><i class="fas fa-chevron-right"></i> Home</a
+                >
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> About Us</a>
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Services</a>
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Contact</a>
+              </li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Services</h4>
+            <ul>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> Traffic Updates</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> Weather Forecast</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> Ride Sharing</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> Trip Planner</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Contact Info</h4>
+            <ul>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka,
+                India
+              </li>
+              <li><i class="fas fa-phone"></i> +91 9876543210</li>
+              <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
+            </ul>
           </div>
         </div>
-        <div class="footer-column">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="INDEX.html"><i class="fas fa-chevron-right"></i> Home</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
-          </ul>
+        <div class="copyright">
+          &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
         </div>
-        <div class="footer-column">
-          <h4>Services</h4>
-          <ul>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Traffic Updates</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Weather Forecast</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Ride Sharing</a></li>
-            <li><a href="#"><i class="fas fa-chevron-right"></i> Trip Planner</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Contact Info</h4>
-          <ul>
-            <li><i class="fas fa-map-marker-alt"></i> Bengaluru, Karnataka, India</li>
-            <li><i class="fas fa-phone"></i> +91 9876543210</li>
-            <li><i class="fas fa-envelope"></i> info@tripverseiq.com</li>
-          </ul>
-        </div>
-      </div>
-      <div class="copyright">
-        &copy; 2023 TRIPVERSE IQ. All Rights Reserved.
-      </div>
-    </footer>
+      </footer>
 
-    <!-- Chatbot Elements -->
-    <div class="chatbot-icon" onclick="toggleChatbot()">
-      <i class="fas fa-robot"></i>
-    </div>
-
-    <div class="chatbot-container" id="chatbot">
-      <div class="chatbot-header">
-        <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
-        <button class="close-chatbot" onclick="toggleChatbot()">
-          <i class="fas fa-times"></i>
-        </button>
+      <!-- Chatbot Elements -->
+      <div class="chatbot-icon" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
       </div>
-      <div class="chatbot-messages" id="chatMessages">
-        <div class="message bot-message">
-          Hello! I'm your Tripverse assistant. How can I help you today?
+
+      <div class="chatbot-container" id="chatbot">
+        <div class="chatbot-header">
+          <h3><i class="fas fa-robot"></i> Tripverse Assistant</h3>
+          <button class="close-chatbot" onclick="toggleChatbot()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+          <div class="message bot-message">
+            Hello! I'm your Tripverse assistant. How can I help you today?
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="userInput"
+            placeholder="Type your message..."
+          />
+          <button onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
         </div>
       </div>
-      <div class="chatbot-input">
-        <input type="text" id="userInput" placeholder="Type your message..." />
-        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-      </div>
-    </div>
 
-    <!-- Rating Popup -->
-    <div class="rating-popup" id="ratingPopup">
-      <div class="rating-container">
-        <button class="close-rating" onclick="closeRatingPopup()">&times;</button>
-        <h3>How would you rate your experience with TRIPVERSE IQ?</h3>
-        <div class="rating-stars">
-          <span onclick="rate(1)">★</span>
-          <span onclick="rate(2)">★</span>
-          <span onclick="rate(3)">★</span>
-          <span onclick="rate(4)">★</span>
-          <span onclick="rate(5)">★</span>
-          <span onclick="rate(6)">★</span>
-          <span onclick="rate(7)">★</span>
-          <span onclick="rate(8)">★</span>
-          <span onclick="rate(9)">★</span>
-          <span onclick="rate(10)">★</span>
-        </div>
-        <p class="rating-text">Select between 1 (poor) to 10 (excellent)</p>
-        <textarea id="feedbackText" placeholder="Optional: Share your feedback..."></textarea>
-        <button onclick="submitRating()" class="submit-rating">Submit Rating</button>
-        <div class="thank-you-message" id="thankYouMessage">
-          Thank you for your feedback! Your rating helps us improve.
+      <!-- Rating Popup -->
+      <div class="rating-popup" id="ratingPopup">
+        <div class="rating-container">
+          <button class="close-rating" onclick="closeRatingPopup()">
+            &times;
+          </button>
+          <h3>How would you rate your experience with TRIPVERSE IQ?</h3>
+          <div class="rating-stars">
+            <span onclick="rate(1)">★</span>
+            <span onclick="rate(2)">★</span>
+            <span onclick="rate(3)">★</span>
+            <span onclick="rate(4)">★</span>
+            <span onclick="rate(5)">★</span>
+            <span onclick="rate(6)">★</span>
+            <span onclick="rate(7)">★</span>
+            <span onclick="rate(8)">★</span>
+            <span onclick="rate(9)">★</span>
+            <span onclick="rate(10)">★</span>
+          </div>
+          <p class="rating-text">Select between 1 (poor) to 10 (excellent)</p>
+          <textarea
+            id="feedbackText"
+            placeholder="Optional: Share your feedback..."
+          ></textarea>
+          <button onclick="submitRating()" class="submit-rating">
+            Submit Rating
+          </button>
+          <div class="thank-you-message" id="thankYouMessage">
+            Thank you for your feedback! Your rating helps us improve.
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    // Show intro animation and then main content after video ends
-    document.addEventListener('DOMContentLoaded', function() {
-      const introAnimation = document.getElementById('introAnimation');
-      const mainContent = document.getElementById('mainContent');
-      const introVideo = document.querySelector('.intro-video');
-      
-      // Hide main content initially
-      mainContent.style.display = 'none';
-      
-      // When video ends, hide intro and show main content
-      introVideo.addEventListener('ended', function() {
-        introAnimation.style.display = 'none';
-        mainContent.style.display = 'block';
-        setTimeout(showRatingPopup, 500); // Show popup after slight delay
-      });
-      
-      // Fallback in case video doesn't fire 'ended' event
-      setTimeout(function() {
-        if (introAnimation.style.display !== 'none') {
-          introAnimation.style.display = 'none';
-          mainContent.style.display = 'block';
+    <script>
+      // Show intro animation and then main content after video ends
+      document.addEventListener("DOMContentLoaded", function () {
+        const introAnimation = document.getElementById("introAnimation");
+        const mainContent = document.getElementById("mainContent");
+        const introVideo = document.querySelector(".intro-video");
+
+        // Hide main content initially
+        mainContent.style.display = "none";
+
+        // When video ends, hide intro and show main content
+        introVideo.addEventListener("ended", function () {
+          introAnimation.style.display = "none";
+          mainContent.style.display = "block";
           setTimeout(showRatingPopup, 500); // Show popup after slight delay
-        }
-      }, 4000); // 4 seconds fallback
-    });
-
-    // Toggle mobile menu
-    function toggleMenu() {
-      const navList = document.getElementById("navList");
-      navList.classList.toggle("show");
-    }
-
-    // Refresh traffic map periodically
-    setInterval(() => {
-      const iframe = document.querySelector('.traffic-frame');
-      iframe.src = iframe.src;
-    }, 30000);
-
-    // Chatbot functionality
-    function toggleChatbot() {
-      const chatbot = document.getElementById("chatbot");
-      chatbot.style.display = chatbot.style.display === "block" ? "none" : "block";
-    }
-
-    function sendMessage() {
-      const userInput = document.getElementById("userInput");
-      const chatMessages = document.getElementById("chatMessages");
-      
-      if (userInput.value.trim() === "") return;
-      
-      // Add user message
-      const userMessage = document.createElement("div");
-      userMessage.className = "message user-message";
-      userMessage.textContent = userInput.value;
-      chatMessages.appendChild(userMessage);
-      
-      // Clear input
-      const message = userInput.value;
-      userInput.value = "";
-      
-      // Scroll to bottom
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      
-      // Simulate bot response after delay
-      setTimeout(() => {
-        const botMessage = document.createElement("div");
-        botMessage.className = "message bot-message";
-        
-        // Simple response logic
-        if (message.toLowerCase().includes("traffic")) {
-          botMessage.textContent = "You can check live traffic updates in the Traffic section. Would you like me to take you there?";
-        } 
-        else if (message.toLowerCase().includes("weather")) {
-          botMessage.textContent = "Current weather conditions are available in the Weather section. It's updated in real-time!";
-        }
-        else if (message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
-          botMessage.textContent = "Hi there! How can I assist you with your travel plans today?";
-        }
-        else {
-          botMessage.textContent = "I'm here to help with your travel queries. You can ask me about traffic, weather, or trip planning.";
-        }
-        
-        chatMessages.appendChild(botMessage);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 1000);
-    }
-
-    // Allow pressing Enter to send message
-    document.getElementById("userInput").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        sendMessage();
-      }
-    });
-
-    // Rating System Functionality
-    let currentRating = 0;
-    let hasRated = localStorage.getItem('hasRated');
-    
-    function showRatingPopup() {
-      // Only show if user hasn't rated yet
-      if (!hasRated) {
-        const popup = document.getElementById('ratingPopup');
-        popup.classList.add('show');
-        
-        // Reset the popup state
-        document.getElementById('thankYouMessage').style.display = 'none';
-        document.querySelector('.submit-rating').style.display = 'block';
-        document.getElementById('feedbackText').style.display = 'block';
-        document.querySelector('.rating-text').style.display = 'block';
-        document.querySelector('.rating-stars').style.display = 'flex';
-        document.querySelector('.rating-container h3').textContent = 'How would you rate your experience with TRIPVERSE IQ?';
-        
-        // Reset stars
-        const stars = document.querySelectorAll('.rating-stars span');
-        stars.forEach(star => {
-          star.classList.remove('active');
-          star.style.color = '#555';
         });
-        currentRating = 0;
+
+        // Fallback in case video doesn't fire 'ended' event
+        setTimeout(function () {
+          if (introAnimation.style.display !== "none") {
+            introAnimation.style.display = "none";
+            mainContent.style.display = "block";
+            setTimeout(showRatingPopup, 500); // Show popup after slight delay
+          }
+        }, 4000); // 4 seconds fallback
+      });
+
+      // Toggle mobile menu
+      function toggleMenu() {
+        const navList = document.getElementById("navList");
+        navList.classList.toggle("show");
       }
-    }
-    
-    function closeRatingPopup() {
-      const popup = document.getElementById('ratingPopup');
-      popup.classList.remove('show');
-      
-      // Don't show again for this session
-      localStorage.setItem('hasRated', 'true');
-      hasRated = true;
-    }
-    
-    function rate(value) {
-      currentRating = value;
-      const stars = document.querySelectorAll('.rating-stars span');
-      stars.forEach((star, index) => {
-        if (index < value) {
-          star.classList.add('active');
-          star.style.color = '#ffd166';
-        } else {
-          star.classList.remove('active');
-          star.style.color = '#555';
+
+      // Refresh traffic map periodically
+      setInterval(() => {
+        const iframe = document.querySelector(".traffic-frame");
+        iframe.src = iframe.src;
+      }, 30000);
+
+      // Chatbot functionality
+      function toggleChatbot() {
+        const chatbot = document.getElementById("chatbot");
+        chatbot.style.display =
+          chatbot.style.display === "block" ? "none" : "block";
+      }
+
+      function sendMessage() {
+        const userInput = document.getElementById("userInput");
+        const chatMessages = document.getElementById("chatMessages");
+
+        if (userInput.value.trim() === "") return;
+
+        // Add user message
+        const userMessage = document.createElement("div");
+        userMessage.className = "message user-message";
+        userMessage.textContent = userInput.value;
+        chatMessages.appendChild(userMessage);
+
+        // Clear input
+        const message = userInput.value;
+        userInput.value = "";
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Simulate bot response after delay
+        setTimeout(() => {
+          const botMessage = document.createElement("div");
+          botMessage.className = "message bot-message";
+
+          // Simple response logic
+          if (message.toLowerCase().includes("traffic")) {
+            botMessage.textContent =
+              "You can check live traffic updates in the Traffic section. Would you like me to take you there?";
+          } else if (message.toLowerCase().includes("weather")) {
+            botMessage.textContent =
+              "Current weather conditions are available in the Weather section. It's updated in real-time!";
+          } else if (
+            message.toLowerCase().includes("hello") ||
+            message.toLowerCase().includes("hi")
+          ) {
+            botMessage.textContent =
+              "Hi there! How can I assist you with your travel plans today?";
+          } else {
+            botMessage.textContent =
+              "I'm here to help with your travel queries. You can ask me about traffic, weather, or trip planning.";
+          }
+
+          chatMessages.appendChild(botMessage);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+      }
+
+      // Allow pressing Enter to send message
+      document
+        .getElementById("userInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+
+      // Rating System Functionality
+      let currentRating = 0;
+      let hasRated = localStorage.getItem("hasRated");
+
+      function showRatingPopup() {
+        // Only show if user hasn't rated yet
+        if (!hasRated) {
+          const popup = document.getElementById("ratingPopup");
+          popup.classList.add("show");
+
+          // Reset the popup state
+          document.getElementById("thankYouMessage").style.display = "none";
+          document.querySelector(".submit-rating").style.display = "block";
+          document.getElementById("feedbackText").style.display = "block";
+          document.querySelector(".rating-text").style.display = "block";
+          document.querySelector(".rating-stars").style.display = "flex";
+          document.querySelector(".rating-container h3").textContent =
+            "How would you rate your experience with TRIPVERSE IQ?";
+
+          // Reset stars
+          const stars = document.querySelectorAll(".rating-stars span");
+          stars.forEach((star) => {
+            star.classList.remove("active");
+            star.style.color = "#555";
+          });
+          currentRating = 0;
+        }
+      }
+
+      function closeRatingPopup() {
+        const popup = document.getElementById("ratingPopup");
+        popup.classList.remove("show");
+
+        // Don't show again for this session
+        localStorage.setItem("hasRated", "true");
+        hasRated = true;
+      }
+
+      function rate(value) {
+        currentRating = value;
+        const stars = document.querySelectorAll(".rating-stars span");
+        stars.forEach((star, index) => {
+          if (index < value) {
+            star.classList.add("active");
+            star.style.color = "#ffd166";
+          } else {
+            star.classList.remove("active");
+            star.style.color = "#555";
+          }
+        });
+      }
+
+      function submitRating() {
+        if (currentRating === 0) {
+          alert("Please select a rating before submitting.");
+          return;
+        }
+
+        const feedback = document.getElementById("feedbackText").value;
+
+        // Here you would typically send the rating and feedback to your server
+        console.log(`User rating: ${currentRating}/10`);
+        console.log(`User feedback: ${feedback}`);
+
+        // Show thank you message
+        document.getElementById("thankYouMessage").style.display = "block";
+        document.querySelector(".submit-rating").style.display = "none";
+        document.getElementById("feedbackText").style.display = "none";
+        document.querySelector(".rating-text").style.display = "none";
+        document.querySelector(".rating-stars").style.display = "none";
+        document.querySelector(".rating-container h3").textContent =
+          "Thank you for your feedback!";
+
+        // Close after 3 seconds
+        setTimeout(closeRatingPopup, 3000);
+
+        // Store that user has rated
+        localStorage.setItem("hasRated", "true");
+        hasRated = true;
+      }
+
+      // Allow rating via keyboard (1-0 keys for 1-10 ratings)
+      document.addEventListener("keydown", function (e) {
+        const popup = document.getElementById("ratingPopup");
+        if (popup.classList.contains("show")) {
+          const key = parseInt(e.key);
+          if (!isNaN(key) && key >= 0 && key <= 9) {
+            // 0 key means 10 rating
+            rate(key === 0 ? 10 : key);
+          }
         }
       });
-    }
-    
-    function submitRating() {
-      if (currentRating === 0) {
-        alert('Please select a rating before submitting.');
-        return;
-      }
-      
-      const feedback = document.getElementById('feedbackText').value;
-      
-      // Here you would typically send the rating and feedback to your server
-      console.log(`User rating: ${currentRating}/10`);
-      console.log(`User feedback: ${feedback}`);
-      
-      // Show thank you message
-      document.getElementById('thankYouMessage').style.display = 'block';
-      document.querySelector('.submit-rating').style.display = 'none';
-      document.getElementById('feedbackText').style.display = 'none';
-      document.querySelector('.rating-text').style.display = 'none';
-      document.querySelector('.rating-stars').style.display = 'none';
-      document.querySelector('.rating-container h3').textContent = 'Thank you for your feedback!';
-      
-      // Close after 3 seconds
-      setTimeout(closeRatingPopup, 3000);
-      
-      // Store that user has rated
-      localStorage.setItem('hasRated', 'true');
-      hasRated = true;
-    }
-    
-    // Allow rating via keyboard (1-0 keys for 1-10 ratings)
-    document.addEventListener('keydown', function(e) {
-      const popup = document.getElementById('ratingPopup');
-      if (popup.classList.contains('show')) {
-        const key = parseInt(e.key);
-        if (!isNaN(key) && key >= 0 && key <= 9) {
-          // 0 key means 10 rating
-          rate(key === 0 ? 10 : key);
-        }
-      }
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

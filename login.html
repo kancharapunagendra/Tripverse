@@ -1,320 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRIPVERSE IQ - Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRIPVERSE IQ - Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('IMAGES/BG4.JPG') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: url("IMAGES/BG4.JPG") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-    .login-container {
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 40px;
-      width: 90%;
-      max-width: 450px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 209, 102, 0.3);
-      text-align: center;
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo {
-      font-weight: bold;
-      font-size: 2.2rem;
-      letter-spacing: 1px;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .logo i {
-      color: #ffd166;
-    }
-
-    .login-title {
-      font-size: 1.5rem;
-      margin-bottom: 30px;
-      color: #ffd166;
-    }
-
-    .login-message {
-      margin-bottom: 30px;
-      line-height: 1.6;
-      opacity: 0.9;
-    }
-
-    .google-btn {
-      background: #fff;
-      color: #444;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .google-btn:hover {
-      background: #f1f1f1;
-      transform: translateY(-2px);
-    }
-
-    .google-btn i {
-      font-size: 1.2rem;
-      color: #4285F4;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 20px 0;
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .divider::before, .divider::after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .divider::before {
-      margin-right: 15px;
-    }
-
-    .divider::after {
-      margin-left: 15px;
-    }
-
-    .email-login {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .input-group {
-      position: relative;
-    }
-
-    .input-group i {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #ffd166;
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 12px 15px 12px 40px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .input-group input:focus {
-      outline: none;
-      border-color: #ffd166;
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .input-group input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .login-btn {
-      background: #ffd166;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s ease;
-      margin-top: 10px;
-    }
-
-    .login-btn:hover {
-      background: #ffc233;
-      transform: translateY(-2px);
-    }
-
-    .footer-links {
-      margin-top: 25px;
-      font-size: 0.9rem;
-    }
-
-    .footer-links a {
-      color: #ffd166;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-
-    .g_id_signin {
-      width: 100% !important;
-      height: 45px !important;
-      border-radius: 8px !important;
-      overflow: hidden !important;
-      margin-bottom: 20px;
-      cursor: pointer;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 20px;
-      font-weight: 500;
-      color: #444;
-      border: 1px solid #dadce0;
-    }
-
-    @media (max-width: 500px) {
       .login-container {
-        padding: 30px 20px;
-        width: 95%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 40px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 209, 102, 0.3);
+        text-align: center;
+        animation: fadeIn 0.8s ease-out;
       }
-      
-      .logo {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="login-container">
-    <div class="logo">
-      <i class="fas fa-compass"></i>
-      TRIPVERSE IQ
-    </div>
-    
-    <h2 class="login-title">Welcome Back</h2>
-    
-    <p class="login-message">
-      Sign in to access real-time traffic insights, weather updates, and smart travel planning
-    </p>
-    
-    <!-- Fake Google Sign-In Button -->
-    <div class="g_id_signin" id="googleSignInBtn">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-          <path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8c-.1.9-.7 1.7-1.5 2.2v2h2.4c1.4-1.3 2.2-3.2 2.2-5.4z"/>
-          <path fill="#34A853" d="M9 18c2 0 3.7-.7 5-1.8l-2.4-2c-.6.4-1.4.7-2.3.7-1.8 0-3.3-1.2-3.8-2.8H2.6v2.1C4 15.6 6.3 18 9 18z"/>
-          <path fill="#FBBC05" d="M5.2 10.8c-.2-.6-.2-1.3 0-1.9V6.8H2.6c-.7 1.3-.7 2.9 0 4.2l2.6-2.2z"/>
-          <path fill="#EA4335" d="M9 5.3c1.3 0 2.5.4 3.4 1.3l2.5-2.5C12.7 2.6 10.9 2 9 2 6.3 2 4 4.4 2.6 6.8l2.6 2.1c.5-1.6 2-2.8 3.8-2.8z"/>
-        </svg>
-        <span>Sign in with Google</span>
-      </div>
-    </div>
-    
-    <div class="divider">or</div>
-    
-    <form class="email-login">
-      <div class="input-group">
-        <i class="fas fa-envelope"></i>
-        <input type="email" placeholder="Email address" required>
-      </div>
-      
-      <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input type="password" placeholder="Password" required>
-      </div>
-      
-      <button type="submit" class="login-btn">Sign In</button>
-    </form>
-    
-    <div class="footer-links">
-      <a href="#">Forgot password?</a> • <a href="#">Create account</a>
-    </div>
-  </div>
 
-  <script>
-    // Simulate Google Sign-In
-    document.getElementById('googleSignInBtn').addEventListener('click', function() {
-      // Change button to loading state
-      this.innerHTML = `
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .logo {
+        font-weight: bold;
+        font-size: 2.2rem;
+        letter-spacing: 1px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .logo i {
+        color: #ffd166;
+      }
+
+      .login-title {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        color: #ffd166;
+      }
+
+      .login-message {
+        margin-bottom: 30px;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+
+      .google-btn {
+        background: #fff;
+        color: #444;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .google-btn:hover {
+        background: #f1f1f1;
+        transform: translateY(-2px);
+      }
+
+      .google-btn i {
+        font-size: 1.2rem;
+        color: #4285f4;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .divider::before {
+        margin-right: 15px;
+      }
+
+      .divider::after {
+        margin-left: 15px;
+      }
+
+      .email-login {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ffd166;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .input-group input:focus {
+        outline: none;
+        border-color: #ffd166;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .input-group input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .login-btn {
+        background: #ffd166;
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .login-btn:hover {
+        background: #ffc233;
+        transform: translateY(-2px);
+      }
+
+      .footer-links {
+        margin-top: 25px;
+        font-size: 0.9rem;
+      }
+
+      .footer-links a {
+        color: #ffd166;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+
+      .g_id_signin {
+        width: 100% !important;
+        height: 45px !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        margin-bottom: 20px;
+        cursor: pointer;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 20px;
+        font-weight: 500;
+        color: #444;
+        border: 1px solid #dadce0;
+      }
+
+      @media (max-width: 500px) {
+        .login-container {
+          padding: 30px 20px;
+          width: 95%;
+        }
+
+        .logo {
+          font-size: 1.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="logo">
+        <i class="fas fa-compass"></i>
+        TRIPVERSE IQ
+      </div>
+
+      <h2 class="login-title">Welcome Back</h2>
+
+      <p class="login-message">
+        Sign in to access real-time traffic insights, weather updates, and smart
+        travel planning
+      </p>
+
+      <!-- Fake Google Sign-In Button -->
+      <div class="g_id_signin" id="googleSignInBtn">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+          >
+            <path
+              fill="#4285F4"
+              d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8c-.1.9-.7 1.7-1.5 2.2v2h2.4c1.4-1.3 2.2-3.2 2.2-5.4z"
+            />
+            <path
+              fill="#34A853"
+              d="M9 18c2 0 3.7-.7 5-1.8l-2.4-2c-.6.4-1.4.7-2.3.7-1.8 0-3.3-1.2-3.8-2.8H2.6v2.1C4 15.6 6.3 18 9 18z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.2 10.8c-.2-.6-.2-1.3 0-1.9V6.8H2.6c-.7 1.3-.7 2.9 0 4.2l2.6-2.2z"
+            />
+            <path
+              fill="#EA4335"
+              d="M9 5.3c1.3 0 2.5.4 3.4 1.3l2.5-2.5C12.7 2.6 10.9 2 9 2 6.3 2 4 4.4 2.6 6.8l2.6 2.1c.5-1.6 2-2.8 3.8-2.8z"
+            />
+          </svg>
+          <span>Sign in with Google</span>
+        </div>
+      </div>
+
+      <div class="divider">or</div>
+
+      <form class="email-login">
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" placeholder="Email address" required />
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" placeholder="Password" required />
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+
+      <div class="footer-links">
+        <a href="#">Forgot password?</a> • <a href="#">Create account</a>
+      </div>
+    </div>
+
+    <script>
+      // Simulate Google Sign-In
+      document
+        .getElementById("googleSignInBtn")
+        .addEventListener("click", function () {
+          // Change button to loading state
+          this.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
           <div class="spinner" style="width: 18px; height: 18px; border: 2px solid #f3f3f3; border-top: 2px solid #4285F4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
           <span>Signing in with Google...</span>
         </div>
       `;
-      
-      // Simulate authentication delay
-      setTimeout(() => {
-        // Redirect to index page after successful "authentication"
-        window.location.href = "INDEX.html";
-      }, 1500);
-    });
 
-    // Regular form submission
-    document.querySelector('.email-login').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Change button to loading state
-      const loginBtn = document.querySelector('.login-btn');
-      loginBtn.innerHTML = `
+          // Simulate authentication delay
+          setTimeout(() => {
+            // Redirect to index page after successful "authentication"
+            window.location.href = "index.html";
+          }, 1500);
+        });
+
+      // Regular form submission
+      document
+        .querySelector(".email-login")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Change button to loading state
+          const loginBtn = document.querySelector(".login-btn");
+          loginBtn.innerHTML = `
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
           <div class="spinner" style="width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top: 2px solid #000; border-radius: 50%; animation: spin 1s linear infinite;"></div>
           <span>Signing in...</span>
         </div>
       `;
-      
-      // Simulate authentication delay
-      setTimeout(() => {
-        window.location.href = "INDEX.html";
-      }, 1500);
-    });
 
-    // Add spinner animation
-    const style = document.createElement('style');
-    style.innerHTML = `
+          // Simulate authentication delay
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
+        });
+
+      // Add spinner animation
+      const style = document.createElement("style");
+      style.innerHTML = `
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
     `;
-    document.head.appendChild(style);
-  </script>
-</body>
+      document.head.appendChild(style);
+    </script>
+  </body>
 </html>

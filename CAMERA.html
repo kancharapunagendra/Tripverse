@@ -13,7 +13,7 @@
       --text: #e2e8f0;
       --card-bg: rgba(30, 41, 59, 0.6);
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -367,37 +367,37 @@
         gap: 1.2rem;
         padding: 1rem;
       }
-      
+
       .nav-links {
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
         gap: 10px;
       }
-      
+
       .page-header h1 {
         font-size: 2.2rem;
       }
-      
+
       .page-header p {
         font-size: 1.1rem;
       }
-      
+
       .search-box {
         flex-direction: column;
       }
-      
+
       #locationInput {
         border-radius: 30px;
         margin-bottom: 12px;
         border-right: 1px solid rgba(245, 158, 11, 0.3);
       }
-      
+
       #searchButton {
         border-radius: 30px;
         border-left: 1px solid rgba(245, 158, 11, 0.3);
       }
-      
+
       .camera-grid {
         grid-template-columns: 1fr;
       }
@@ -412,13 +412,13 @@
         <i class="fas fa-globe-americas"></i>
         <span>TRIPVERSE IQ</span>
       </a>
-    <li><a href="INDEX.html"><i class="fas fa-home"></i> Home</a></li>
-        
+    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+
           <li><a href="traffic congetion.html"><i class="fas fa-traffic-light"></i> Traffic</a></li>
           <li><a href="weather .html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
           <li><a href="CAMERA.html"><i class="fas fa-video"></i> Cameras</a></li>
           <li><a href="share pool .html"><i class="fas fa-car-side"></i> Share Pool</a></li>
-    
+
           <li><a href="mood score.html"><i class="fas fa-smile"></i> Mood Score</a></li>
           <li><a href="budject.html"><i class="fas fa-calendar-alt"></i> Budget  Planner</a></li>
       </div>
@@ -432,7 +432,7 @@
         <h1><i class="fas fa-video"></i> TRIPVERSE LIVE CAMS</h1>
         <p>Experience real-time views from around the world through our network of high-definition cameras. Watch famous landmarks, natural wonders, and cityscapes as they happen.</p>
       </div>
-      
+
       <div class="search-box">
         <input type="text" id="locationInput" placeholder="Search location (e.g., New York, Paris, Tokyo)">
         <button id="searchButton"><i class="fas fa-search"></i> Search</button>
@@ -616,13 +616,13 @@
     // Initialize with popular cameras
     window.onload = function() {
       loadCameras('all');
-      
+
       // Setup search button
       document.getElementById('searchButton').addEventListener('click', function() {
         const location = document.getElementById('locationInput').value.toLowerCase();
         loadCameras(location);
       });
-      
+
       // Allow Enter key for search
       document.getElementById('locationInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -635,14 +635,14 @@
     function loadCameras(location) {
       const grid = document.getElementById('cameraGrid');
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;"><div class="loading-spinner"><i class="fas fa-globe fa-spin" style="font-size:3rem;color:var(--accent);"></i><p style="margin-top:1.5rem;font-size:1.2rem;">Loading live cameras around the world...</p></div></div>';
-      
+
       // Show the location in search box
       if (location !== 'all') {
         document.getElementById('locationInput').value = location.charAt(0).toUpperCase() + location.slice(1);
       } else {
         document.getElementById('locationInput').value = '';
       }
-      
+
       // Get cameras for location or show all
       let cameras = [];
       if (cameraDatabase[location]) {
@@ -651,11 +651,11 @@
         cameras = cameraDatabase['all'];
       } else {
         // Search through all cameras for partial matches
-        cameras = cameraDatabase['all'].filter(cam => 
-          cam.title.toLowerCase().includes(location) || 
+        cameras = cameraDatabase['all'].filter(cam =>
+          cam.title.toLowerCase().includes(location) ||
           cam.description.toLowerCase().includes(location)
         );
-        
+
         if (cameras.length === 0) {
           grid.innerHTML = `
             <div style="grid-column:1/-1;text-align:center;padding:3rem;">
@@ -672,7 +672,7 @@
           return;
         }
       }
-      
+
       // Display cameras with enhanced cards
       grid.innerHTML = cameras.map(cam => `
         <div class="camera-card">
