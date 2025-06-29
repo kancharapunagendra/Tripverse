@@ -35,7 +35,6 @@ This project analyzes traffic congestion patterns using a web-based dashboard bu
 
 ### Prerequisites
 - Node.js (v16+)
-- Java JDK (11+)
 - SQLite3
 
 ### Frontend Setup
